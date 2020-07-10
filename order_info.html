@@ -1,0 +1,236 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.css" rel="stylesheet" />
+		<link href="css/timeline.css" rel="stylesheet" />
+		<style>
+			.mui-btn-primary {
+				background-color: #000000;
+			}
+			span .mui-h5 {
+				font-weight: bold;
+			}
+			.mui-card {
+				border-radius: 10px;
+			}
+			
+			@font-face {font-family: "iconfont";
+			  src: url('//at.alicdn.com/t/font_1597389_lp5df39udll.eot?t=1578134753056'); /* IE9 */
+			  src: url('//at.alicdn.com/t/font_1597389_lp5df39udll.eot?t=1578134753056#iefix') format('embedded-opentype'), /* IE6-IE8 */
+			  url('data:application/x-font-woff2;charset=utf-8;base64,d09GMgABAAAAAAUwAAsAAAAACigAAATiAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCDQAqHJIYyATYCJAMYCw4ABCAFhG0HWBvgCMgekiQqAgUUABQgEZk4Hr7W0Pd39zYAoBA9S1TsozJR8ZnIqFaYGl1Z46uBjLijnNrIUADcEgUYRQm7yspVDMIAK8U7x2UgOweEXye+3/8P9y5ueYHNZ7Vd/mvtZRsDjAMKaI1bjaV3BxLw3YnbLbBzCNTq5GUC3ebNRZyl5ZDQSxGsC8SzYLVAr5ZdmWGETlMdebWIz2DWmT4Mz4BP+e/Hf9iLXiRNFlx1/ZRaAwm/+v4oG3WfDuW5E1z780J7i4wNoBCvo/4XxjK/wajbyZqcAPftTkn61ff7gO/Tf5R9A2RJfUXG7vBfHiFLioaoAn0v0c51zb1TxDyCXwE8Mr/S0Qn4IyGPwh/ZrkFz3WP7EIh+4ivSNnJZ0vCy3oHpaUS/3q7e4ZDsFNXjod+9I9+/p7ze0nffkvp7qi78wHi+bxquDvN6mSseIkXHu+tdBB7eQq0/3Jc6/34meQhKvjybTR+YSl56MbFsaznziDec6To6kjnZNc8mwq24B3Rxt4733xlHsl3H9UOuI50nmXvv0O73qQ+9U/Z4WFFs/eVpZ49wYODBqzM8Hotr9oEzY5mNW0bQR/acvTmjPOzgSGbr1a7Lo6n1+4dT+6+f3jWTXLcJ/tbmU9fuTac3uIaR+5iW43Xuv65fc93ovMlcqIvxoOKq5Dhlz59SHstSIEXqI1KIGjMCD9/1utuEkKm7Iv5IdGom+bBUgm7zxInm7vDxicg8hRnm3OOSiTrD/rUDtX/7CR1bqif+GlYRRbD1DSUJnWhoeJbeoRWflE1oXzmYgym5VP45Tx/4/zR+WOqN0xcnT59rHMl++Vnjo0ufNyLWOse49dnFG5eHJfP/Txuo58k/m1PM0P61Pb98aQTNdhWxp65gb5lAQcYt0IPZ4FF/BvjCqX+OpG7n5/frd5V3+3aM+SH5MWGl8GEVyv89e7YfLkiFVGmF3+w5A1D+yFNB5NDENWJQ9Ej3vA8281zwveEL77qHva4qi+t4/GnUp5fi9bKq1+6hdxcNvxvMc5ubxo105yS+Kna3J54fe789qdRVBSgPOmz86ivj4ZAgTHrqiqqXphEjTKh5yYg9HM9ZNTkkFBldngjUDZFopSjSEKqcD6ATCyzEOjyF9pU9NMVJZwETRJSfkl05cQq9DkMrQKubIL/5+OpNhvwO0F4yPjJm5Kzf8gHjUMtaIxodf9fbbP640Vw1MOa/Xn0L+B62/Cvq2S7/zxmIFX/OrmJoAZSkqwJHLbbOrLpWbkuqDr/UYOKfaG4pPOzzfRnHxHr/fuNYDUmHOcg6LZAKbQMaPQ6g6nQI3dalv91jhMIoShfWLAEIg05C0u8bZIOekwrtM2iM+w2qwTBCt5sYemCPpRD6JCvYouEaNL8JCZzo5COX1qdoLcLWOrtFaapyJo0VVUihQL+AbikdO7Gyjx1qvTVI03jEK6IDpcF12G4XkaSItZjT/BZomhTl78+PfZMfJzqgj1MKzEKD1UDma4IIOCInPh2t6dP7+SKYVR07C2VmoCNNwxQqYXIkkJ8AASld7xQNPJfZqnpWQTQanlfxFCIHJA29mD3MixBpfFEtjKPxs2BDVhLFn4bxUr3f8Y2OV3kMugVfUSNFjhJN1OiQd0L4Pg11tYJFbBScVlODWIN7lbJY17tVO48TpSYAAAA=') format('woff2'),
+			  url('//at.alicdn.com/t/font_1597389_lp5df39udll.woff?t=1578134753056') format('woff'),
+			  url('//at.alicdn.com/t/font_1597389_lp5df39udll.ttf?t=1578134753056') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+			  url('//at.alicdn.com/t/font_1597389_lp5df39udll.svg?t=1578134753056#iconfont') format('svg'); /* iOS 4.1- */
+			}
+			
+			.iconfont {
+			  font-family: "iconfont" !important;
+			  font-size: 16px;
+			  font-style: normal;
+			  -webkit-font-smoothing: antialiased;
+			  -moz-osx-font-smoothing: grayscale;
+			}
+			
+			.icon-04f:before {
+			  content: "\e60b";
+			  color: gray;
+			  font-size: 50px;
+			}
+			
+			.icon-wujiaoxing:before {
+			  content: "\e647";
+			}
+			
+			.icon-wode:before {
+			  content: "\e630";
+			  color: blue;
+			  font-size: 50px;
+			}
+			
+			.icon-xingxing:before {
+			  content: "\e870";
+			  color: yellow;
+			  font-size: 21px;
+			}
+			
+			#customerName {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				width: 270px;
+				display: inline-block;
+			}
+			#mileage {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+		</style>
+	</head>
+
+	<body style="background-color: rgba(0,0,0,0);">
+		
+		<div class="mui-content mui-card">
+			<div style="background-color: #F2F2F2;padding: 10px;">
+				<span class="mui-icon iconfont icon-04f" style="height: 30px;"></span>
+				<div style="display: inline-block;">
+					<div style="display: block;">
+						<div>
+							<span class="mui-h4" id="carNO"></span>
+							<span class="mui-h5" id="mileage"></span>
+						</div>
+					</div>
+					<div style="display: block;">
+						<span class="mui-icon iconfont icon-xingxing"></span>
+						<span class="mui-h5" id="customerName"></span>
+					</div>
+				</div>
+			</div>
+			
+			<section id="cd-timeline" class="cd-container" style="">
+				<div class="cd-timeline-block">
+					<div class="cd-timeline-img cd-green"></div>
+					<div class="cd-timeline-content">
+						<div></div>
+						<div>
+							<span class="mui-h4">工厂名称:</span>
+							<span class="mui-h4" id="factoryName"></span>
+						</div>
+						<div>
+							<span class="mui-h4">物料名称:</span>
+							<span class="mui-h4" id="goodsName"></span>
+						</div>
+						<div>
+							<span class="mui-h4">送达地区:</span>
+							<span class="mui-h4" id="areaName"></span>
+						</div>
+						<div>
+							<span class="mui-h4">订单载重:</span>
+							<span class="mui-h4" id="orderWeight"></span>
+						</div>
+						<div>
+							<span class="mui-h4">开票时间:</span>
+							<span class="mui-h4" id="orderTime"></span>
+						</div>
+						<div>
+							<span class="mui-h4">二次过磅时间:</span>
+							<span class="mui-h4" id="secondWeightTime"></span>
+						</div>
+						<div>
+							<span class="mui-h4">完成方式:</span>
+							<span class="mui-h4" id="finishType"></span>
+						</div>
+						<div>
+							<span class="mui-h4">完成时间:</span>
+							<span class="mui-h4" id="finishTime"></span>
+						</div>
+					</div>
+				</div>
+				<div class="cd-timeline-block">
+					<div class="cd-timeline-img cd-red"></div>
+					<div class="cd-timeline-content">
+						<div></div>
+					</div>
+				</div>
+			</section>
+			
+			<div class="mui-content-padded">
+				<button id='getHistory' class="mui-btn-block mui-btn-primary">获取轨迹</button>
+			</div>
+		</div>
+		
+		<script src="js/mui.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function() {
+				plusReady();
+			});
+
+			function plusReady() {
+				var ws = plus.webview.currentWebview();
+				var parent = ws.opener();
+				getOrderDetail(ws.orderInfo);
+				var self = ws.orderInfo;
+				if (self.orderStatus == 0) {
+					document.getElementById("mileage").style.display = "none";
+					// 订单未完成, 获取车辆当前位置
+					document.getElementById("getHistory").className = "mui-btn mui-btn-block mui-btn-primary";
+					document.getElementById("getHistory").innerText = "车辆当前位置";
+					//getLatest(carInfo.systemNo);
+				} else if (self.orderStatus == 1) {
+					document.getElementById("mileage").style.display = "inline";
+					//document.getElementById("mileage").innerHTML = "获取轨迹后计算";
+					// 订单已完成, 显示运行轨迹
+					var start = self.secondWeightTime;
+					var end = self.finishTime;
+					if (start && end) {
+						document.getElementById("getHistory").className = "mui-btn mui-btn-block mui-btn-primary";
+						document.getElementById("getHistory").innerText = "获取车辆轨迹";
+					}
+				} else {
+					document.getElementById("mileage").style.display = "none";
+					// 未知状态
+					document.getElementById("getHistory").className = "mui-hidden";
+				}
+
+				//document.getElementById("getHistory").className = "mui-btn mui-btn-block mui-btn-primary";
+				document.getElementById("getHistory").addEventListener('tap', function() {
+					//console.log(parent);
+					if (self.orderStatus == 0) {
+						parent.evalJS('getLatest()');
+					} else if (self.orderStatus == 1) {
+						//document.getElementById("mileage").innerHTML = "正在计算中...";
+						parent.evalJS("getTrack()");
+						//document.getElementById("mileage").innerHTML = (endMileage - startMileage) + "Km";
+					}
+				});
+			}
+			
+			function updateMileage(content) {
+				document.getElementById("mileage").innerHTML = content;
+			}
+
+			/**
+			 * 订单详情
+			 */
+			function getOrderDetail(orderInfo) {
+				var orderId = orderInfo.orderId;
+
+				var customerName = document.getElementById('customerName');
+				customerName.innerHTML = orderInfo.customerName;
+
+				var factoryName = document.getElementById('factoryName');
+				factoryName.innerHTML = orderInfo.factoryName;
+
+				var goodsName = document.getElementById('goodsName');
+				goodsName.innerHTML = orderInfo.goodsName;
+
+				var areaName = document.getElementById('areaName');
+				areaName.innerHTML = orderInfo.areaName;
+
+				var orderWeight = document.getElementById('orderWeight');
+				orderWeight.innerHTML = orderInfo.orderWeight;
+
+				var carNO = document.getElementById('carNO');
+				carNO.innerHTML = orderInfo.carNO;
+
+				var orderTime = document.getElementById('orderTime');
+				orderTime.innerHTML = orderInfo.orderTime;
+
+				var secondWeightTime = document.getElementById('secondWeightTime');
+				secondWeightTime.innerHTML = orderInfo.secondWeightTime;
+
+				var finishType = document.getElementById('finishType');
+				finishType.innerHTML = orderInfo.finishType;
+
+				var finishTime = document.getElementById('finishTime');
+				finishTime.innerHTML = orderInfo.finishTime;
+			}
+		</script>
+	</body>
+
+</html>

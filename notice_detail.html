@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="css/mui.css" rel="stylesheet" />
+		<link href="css/icons-extra.css" rel="stylesheet">
+
+		<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/app.js" type="text/javascript" charset="utf-8"></script>
+		<style>
+			.mui-action-back {
+				touch-action: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">公告详情</h1>
+		</header>
+
+		<div class="mui-content">
+			<div class="mui-card">
+				<div id="title" class="mui-card-header"></div>
+				<div class="mui-card-content">
+					<div id="content" class="mui-card-content-inner">
+
+					</div>
+				</div>
+				<div id="time" class="mui-card-footer"></div>
+			</div>
+
+		</div>
+
+		<script type="text/javascript">
+			(function(mui, doc) {
+
+				mui.plusReady(function() {
+					var self = plus.webview.currentWebview();
+
+					document.getElementById("title").innerHTML = self.noticeName;
+					document.getElementById("content").innerHTML = self.noticeContent;
+					document.getElementById("time").innerHTML = self.createTime;
+					
+					setNoticeReaded(self.noticeID);
+				});
+
+				function setNoticeReaded(noticeId) {
+					//console.log("noticeId:" + noticeId);
+					var requestObj = {
+						module: "通知公告",
+						operation: "setNoticeReaded",
+						noticeID: noticeId
+					};
+					app.request("pc.do", requestObj, function(data) {
+						
+					}, function() {
+
+					});
+				}
+
+			}(mui, document));
+		</script>
+	</body>
+
+</html>

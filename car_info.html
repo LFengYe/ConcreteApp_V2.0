@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="css/mui.css" rel="stylesheet" />
+		<link href="css/icons-extra.css" rel="stylesheet">
+
+		<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/app.js" type="text/javascript" charset="utf-8"></script>
+		<style>
+			.mui-table-view .mui-table-view-cell:first-child {
+				margin-top: 50px;
+			}
+			
+			.mui-table-view-cell span:first-child {
+				color: darkgray;
+			}
+			
+			.mui-action-back {
+				touch-action: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">车辆信息</h1>
+			<button id="refresh" class=" mui-pull-right mui-btn-link">刷新</button>
+		</header>
+
+		<div class="mui-content">
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<ul class="mui-table-view mui-table-view-chevron">
+						<li class="mui-table-view-cell">
+							<span>车牌号</span>
+							<span id="carNO" class="mui-pull-right"></span>
+						</li>
+						<li class="mui-table-view-cell">
+							<span>所属车队</span>
+							<span id="motorcadeName" class="mui-pull-right"></span>
+						</li>
+						<li class="mui-table-view-cell">
+							<span>定位时间</span>
+							<span id="gpsTime" class="mui-pull-right"></span>
+						</li>
+						<li class="mui-table-view-cell">
+							<span>电子封签</span>
+							<span id="electronicSeal" class="mui-pull-right"></span>
+						</li>
+						<li class="mui-table-view-cell">
+							<span>服务到期</span>
+							<span id="expiredDate" class="mui-pull-right"></span>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<input type="hidden" id="carNOValue" value="" />
+		</div>
+
+		<script type="text/javascript">
+			(function(mui, doc) {
+
+				mui.plusReady(function() {
+					var settings = app.getSettings();
+					var carInfo = settings.userInfo;
+					setCarInfo(carInfo);
+					document.getElementById('refresh').addEventListener("tap", function() {
+						carInfo = getCarInfo(document.getElementById("carNOValue").value);
+						if (carInfo) {
+							setCarInfo(carInfo);
+						}
+					});
+				});
+
+				function setCarInfo(carInfo) {
+					document.getElementById("carNO").innerHTML = carInfo.carNO;
+					document.getElementById("motorcadeName").innerHTML = carInfo.motorcadeName;
+					document.getElementById("gpsTime").innerHTML = carInfo.gpsTime;
+					document.getElementById("electronicSeal").innerHTML = carInfo.electronicSeal;
+					document.getElementById("expiredDate").innerHTML = carInfo.expiredDate;
+
+					document.getElementById("carNOValue").value = carInfo.carNO;
+				}
+
+				function getCarInfo(carNO) {
+					var requestObj = {
+						module: "车辆管理",
+						operation: "request_page",
+						pageSize: 10,
+						pageIndex: 1,
+						datas: {
+							carNO: carNO
+						},
+						rely: {}
+					};
+					app.request("pc.do", requestObj, function(data) {
+						var data = JSON.parse(data);
+						if(data.datas.length > 0) {
+							return data.datas[0];
+						}
+						return null;
+					}, function() {
+						return null;
+					});
+				}
+
+			}(mui, document));
+		</script>
+	</body>
+
+</html>

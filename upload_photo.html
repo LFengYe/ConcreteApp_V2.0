@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>拍照上传</title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+
+		<style>
+			ul {
+				font-size: 14px;
+				color: #8f8f94;
+			}
+			
+			.mui-btn {
+				padding: 10px;
+			}
+			
+			#driver_img {
+				max-height: 300px;
+			}
+			
+			#car_img {
+				max-height: 300px;
+			}
+			
+			.mui-action-back {
+				touch-action: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="padding-right: 15px;">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">拍照上传</h1>
+			<button id='setting' class=" mui-pull-right mui-btn-link mui-hidden">设置</button>
+		</header>
+		<div class="mui-content">
+			<div class="mui-content-padded">
+				<div>
+					<label>车辆到货地点照片(需包含车辆):</label>
+				</div>
+				<img id="driver_img" src="images/iconfont-tianjia.png" />
+
+				<div>
+					<label>请添加车辆正面照片:</label>
+				</div>
+				<img id="car_img" src="images/iconfont-tianjia.png" />
+			</div>
+		</div>
+
+		<div class="mui-content-padded">
+			<button id='upload' class="mui-btn mui-btn-block mui-btn-primary">提交</button>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/app.js"></script>
+		<script src="js/jquery-1.11.1.min.js"></script>
+		<script>
+			(function(mui, doc) {
+				mui.init();
+				var settings = app.getSettings();
+
+				var waitDialog;
+				var orderInfo = null;
+				var carImgBase64 = null;
+				var driverImgBase64 = null;
+
+				getUnfinishedOrder();
+
+				mui.plusReady(function() {
+					
+					if (!settings.uuid) {
+						plus.device.getInfo({
+							success: function(deviceInfo) {
+								settings.uuid = deviceInfo.uuid;
+							},
+							fail: function(error){
+								plus.nativeUI.alert("获取手机唯一标识号失败!" + error.message);
+							}
+						});
+						//settings.uuid = plus.device.uuid;
+					}
+					
+					//设置
+					var settingButton = doc.getElementById('setting');
+					//settingButton.style.display = settings.autoLogin ? 'block' : 'none';
+					settingButton.addEventListener('tap', function(event) {
+						app.openUrlNoTimeOut("setting.html");
+					});
+
+					var driverImg = doc.getElementById('driver_img');
+					driverImg.addEventListener('tap', function(event) {
+						var cmr = plus.camera.getCamera();
+						cmr.captureImage(function(path) {
+							plus.io.resolveLocalFileSystemURL(path, function(entry) {
+								//compressImage(entry.toLocalURL(), entry.name, 'driver_img');
+								getImgBase64(entry.toLocalURL(), function(data) {
+									driverImgBase64 = data;
+									driverImg.src = data;
+								});
+								//cutImage(entry.toLocalURL(), "driver_img");
+							}, function(e) {
+								plus.nativeUI.toast("读取拍照文件错误：" + e.message);
+							});
+						}, function(err) {});
+					}, function(e) {}, {
+						filename: "_doc/camera/",
+						index: 1,
+						popover: {
+							top: "10px",
+							left: "10px",
+							width: "20px",
+							height: "20px"
+						}
+					});
+
+					var car_img = doc.getElementById('car_img');
+					car_img.addEventListener('tap', function(event) {
+						//createView();
+						var cmr = plus.camera.getCamera();
+						cmr.captureImage(function(path) {
+							plus.io.resolveLocalFileSystemURL(path, function(entry) {
+								//compressImage(entry.toLocalURL(), entry.name, 'car_img');
+								getImgBase64(entry.toLocalURL(), function(data) {
+									carImgBase64 = data;
+									car_img.src = data;
+								});
+
+								//cutImage(entry.toLocalURL(), "car_img");
+							}, function(e) {
+								plus.nativeUI.toast("读取拍照文件错误：" + e.message);
+							});
+						}, function(err) {}, {
+							filename: "_doc/camera/",
+							index: 1,
+							popover: {
+								top: "10px",
+								left: "10px",
+								width: "20px",
+								height: "20px"
+							}
+						});
+					}, function(e) {});
+
+					var uploadBtn = doc.getElementById('upload');
+					uploadBtn.addEventListener('tap', function(event) {
+						var curLocal = app.getCurLocation();
+						if(!curLocal) {
+							plus.nativeUI.alert("请获取位置信息后再上传!");
+							return;
+						}
+						var latitude = curLocal.latitude,
+							longitude = curLocal.longitude;
+
+						if(!carImgBase64 || !driverImgBase64) {
+							plus.nativeUI.alert("请拍照后再上传!");
+							return;
+						}
+						
+						if(!settings.uuid) {
+							plus.nativeUI.alert("获取手机唯一标识号失败!");
+							return;
+						}
+						if(orderInfo) {
+							var uploadData = {
+								module: "carInfo",
+								operation: "finishOrder",
+								curLat: latitude,
+								curLog: longitude,
+								phoneIMEI: settings.uuid
+							}
+							if(orderInfo.isRequireImg) {
+								uploadData.carImg = carImgBase64;
+								uploadData.driverImg = driverImgBase64;
+							}
+
+							waitDialog = plus.nativeUI.showWaiting("正在上传...");
+							mui.ajax(app.getUrl() + "app.do", {
+								data: JSON.stringify(uploadData),
+								dataType: "json",
+								type: "post",
+								success: function(data) {
+									driverImgBase64 = null;
+									carImgBase64 = null;
+									driverImg.src = "images/iconfont-tianjia.png";
+									car_img.src = "images/iconfont-tianjia.png";
+
+									waitDialog.close();
+									plus.nativeUI.alert(data.message);
+								}
+							});
+						} else {
+							plus.nativeUI.alert("您当前没有未完成订单!");
+						}
+					});
+
+				});
+
+				//获取未完成订单
+				function getUnfinishedOrder() {
+					var request = {
+						module: "order",
+						operation: "getUnfinished",
+						pageSize: 99,
+						pageIndex: 1
+					};
+					mui.ajax(app.getUrl() + "app.do", {
+						data: JSON.stringify(request),
+						dataType: "json",
+						type: "post",
+						success: function(data) {
+							if(data.status == 0 && data.data) {
+								orderInfo = JSON.parse(data.data).datas[0];
+								//console.log(orderInfo.isRequireImg);
+							}
+						}
+					});
+				}
+
+				//创建原生View控件
+				function createView() {
+					var view = new plus.nativeObj.View('test', {
+						top: '0px',
+						left: '0px',
+						height: '80%',
+						width: '100%',
+						backgroundColor: '#00000000'
+					});
+					view.drawRect("#00FFFFFF", {
+						top: '25%',
+						left: '5%',
+						width: '90%',
+						height: '50%'
+					}, 'test');
+					view.show();
+				}
+
+				//压缩图片
+				function compressImage(url, filename, imgId) {
+					var name = "_doc/upload/" + imgId + "-" + filename; //_doc/upload/F_ZDDZZ-1467602809090.jpg  
+					plus.zip.compressImage({
+							src: url, //src: (String 类型 )压缩转换原始图片的路径  
+							dst: name, //压缩转换目标图片的路径  
+							quality: 20, //quality: (Number 类型 )压缩图片的质量.取值范围为1-100  
+							overwrite: true //overwrite: (Boolean 类型 )覆盖生成新文件  
+						},
+						function(event) {
+							//saveimage(url, imgId, filename, name);
+							document.getElementById(imgId).src = event.target;
+							switch(imgId) {
+								case "car_img":
+									carImgBase64 = event.target;
+									break;
+								case "driver_img":
+									driverImgBase64 = event.target;
+									break;
+							}
+						},
+						function(error) {
+							plus.nativeUI.toast("压缩图片失败，请稍候再试");
+						});
+				}
+
+				//裁剪图片
+				function cutImage(path, elementId) {
+					mui.openWindow({
+						url: 'upload_cropper.html',
+						id: 'upload_cropper',
+						extras: {
+							path: path,
+							elementId: elementId
+						},
+						waiting: {
+							autoShow: true
+						}
+					});
+				}
+
+				//获取图片的Base64
+				function getImgBase64(url, callback) {
+					var img = new Image();
+					img.src = url;
+					img.onload = function() {
+						var that = this;
+						//生成比例 
+						var w = that.width,
+							h = that.height,
+							scale = w / h;
+						w = 480 || w; //480  你想压缩到多大，改这里
+						h = w / scale;
+
+						//生成canvas
+						var canvas = document.createElement('canvas');
+						var ctx = canvas.getContext('2d');
+						$(canvas).attr({
+							width: w,
+							height: h
+						});
+						ctx.drawImage(that, 0, 0, w, h);
+						//1最清晰，越低越模糊。有一点不清楚这里明明设置的是jpeg。
+						//弹出 base64 开头的一段 data：image/png;却是png。哎开心就好，开心就好
+						var base64 = canvas.toDataURL('image/jpeg', 1 || 0.8);
+						callback(base64);
+					};
+				}
+
+				//添加updateHeadImg自定义事件监听
+				window.addEventListener('updateImg', function(event) {
+					//获得事件参数
+					var my_icon = event.detail.img_path;
+					//console.log(my_icon);
+					if(my_icon) {
+						var id = event.detail.elementId;
+						document.getElementById(id).src = my_icon;
+						//console.log(id);
+						switch(id) {
+							case "car_img":
+								carImgBase64 = my_icon;
+								break;
+							case "driver_img":
+								driverImgBase64 = my_icon;
+								break;
+						}
+					} else {
+						console.log("error");
+					}
+				});
+
+			}(mui, document));
+		</script>
+	</body>
+
+</html>

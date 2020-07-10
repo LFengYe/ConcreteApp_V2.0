@@ -1,0 +1,212 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/icons-extra.css">
+
+		<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/app.js" type="text/javascript" charset="utf-8"></script>
+		<style>
+			.mui-content>.mui-table-view:first-child {
+				margin-top: 1px;
+			}
+			
+			.mui-table-view:before,
+			.mui-table-view:after {
+				height: 0;
+			}
+			
+			.red {
+				color: red;
+			}
+			
+			.weight {
+				font-weight: bolder;
+				color: black;
+			}
+			
+			.red-point {
+				position: relative;
+			}
+			
+			.red-point::before {
+				content: " ";
+				border: 3px solid red;
+				/*设置红色*/
+				border-radius: 3px;
+				/*设置圆角*/
+				position: absolute;
+				z-index: 1000;
+				right: 0;
+				margin-right: 10px;
+			}
+			.mui-action-back {
+				touch-action: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">我的公告</h1>
+		</header>
+
+		<div id="refreshContainer" class="mui-content mui-scroll-wrapper">
+			<ul class="mui-table-view">
+				<!--<li class="mui-table-view-cell mui-media red-point">
+					<a href="javascript:;">
+						<div class="mui-media-body">
+							木屋
+							<p class='mui-ellipsis'>想要这样一间小木屋，夏天挫冰吃瓜，冬天围炉取暖.</p>
+						</div>
+					</a>
+				</li>-->
+			</ul>
+		</div>
+
+		<script type="text/javascript">
+			(function(mui, doc) {
+
+				var curIndex = 0;
+				var pageSize = 10;
+				var pageIndex = 0;
+				var allData = [];
+
+				mui.plusReady(function() {
+
+					mui.init({
+						pullRefresh: {
+							container: "#refreshContainer",
+							down: {
+								style: 'circle', //必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+								callback: pulldownRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+							},
+							up: {
+								contentrefresh: '正在加载...',
+								callback: pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+							}
+						}
+					});
+
+					if(mui.os.plus) {
+						mui.plusReady(function() {
+							setTimeout(function() {
+								mui('#refreshContainer').pullRefresh().pullupLoading();
+							}, 10);
+
+						});
+					} else {
+						mui.ready(function() {
+							mui('#refreshContainer').pullRefresh().pullupLoading();
+						});
+					}
+				});
+
+				/**
+				 * 下拉刷新具体业务实现
+				 */
+				function pulldownRefresh() {
+					var settings = app.getSettings();
+					var table = doc.body.querySelector('.mui-table-view');
+					curIndex = 0;
+					pageIndex = 1;
+					var requestObj = {
+						module: "通知公告",
+						operation: "request_page",
+						pageSize: pageSize,
+						pageIndex: pageIndex,
+						rely: {
+							publishTarget: settings.noticeType
+						}
+					};
+					app.request("pc.do", requestObj, function(data) {
+						//console.log('pulldown data:' + data);
+						var cells = doc.body.querySelectorAll('.mui-table-view-cell');
+						for(var i = 0; i < cells.length; i++) {
+							table.removeChild(cells[i]);
+						}
+						var data = JSON.parse(data);
+						handleData(data.datas, table);
+						allData = data.datas;
+						mui('#refreshContainer').pullRefresh().endPulldownToRefresh(); //refresh completed
+					}, function() {
+						mui('#refreshContainer').pullRefresh().endPulldownToRefresh(); //refresh completed
+					});
+				}
+				/**
+				 * 上拉加载具体业务实现
+				 */
+				function pullupRefresh() {
+					var settings = app.getSettings();
+					var that = this;
+					var table = doc.body.querySelector('.mui-table-view');
+					pageIndex = pageIndex + 1;
+					var requestObj = {
+						module: "通知公告",
+						operation: "request_page",
+						pageSize: pageSize,
+						pageIndex: pageIndex,
+						rely: {
+							publishTarget: settings.noticeType
+						}
+					};
+					app.request("pc.do", requestObj, function(data) {
+						//console.log('pullup data:' + data);
+						var data = JSON.parse(data);
+						handleData(data.datas, table);
+						allData = allData.concat(data.datas);
+						mui('#refreshContainer').pullRefresh().endPullupToRefresh(false); //参数为true代表没有更多数据了。
+					}, function() {
+						mui('#refreshContainer').pullRefresh().endPullupToRefresh(true); //参数为true代表没有更多数据了。
+						//that.enablePullupToRefresh(false);
+					});
+				}
+
+				function handleData(data, table) {
+					//console.log(data);
+					for(var i = 0; i < data.length; i++) {
+						var item = data[i];
+						var li = doc.createElement('li');
+						li.className = 'mui-table-view-cell mui-media';
+						li.innerHTML = createItemHtml(item);
+						li.setAttribute("selectedIndex", curIndex + i);
+
+						li.addEventListener('tap', function(event) {
+							allData[this.getAttribute("selectedIndex")].noticeID = allData[this.getAttribute("selectedIndex")].id;
+							app.openUrlNoTimeOutWithParams('notice_detail.html', allData[this.getAttribute("selectedIndex")]);
+						});
+
+						table.appendChild(li);
+					}
+				}
+
+				function createItemHtml(item) {
+					var htmlStr = "";
+
+					htmlStr = '<a href="javascript:;">';
+					if (item.readStatus == 1) {
+						htmlStr += '<div class="mui-media-body">';
+					} else {
+						htmlStr += '<div class="mui-media-body red-point">';
+					}
+					htmlStr += item.noticeName;
+					htmlStr += '<p class="mui-ellipsis">' + item.noticeContent + '</p>';
+
+					htmlStr += '</div>';
+					htmlStr += '</a>';
+
+					return htmlStr;
+				}
+			}(mui, document));
+		</script>
+	</body>
+
+</html>

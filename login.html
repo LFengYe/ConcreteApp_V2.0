@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>登录</title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<link href="css/mui.picker.css" rel="stylesheet" />
+		<link href="css/mui.poppicker.css" rel="stylesheet" />
+		<style>
+			.bodyClass {
+				background-image: url(images/bg.png);
+				height: 100%;
+				width: 100%;
+			}
+			.titleClass {
+				color: #00c1cd;
+				font-size: 32px;
+				width: 100%;
+				text-align: center;
+				margin-top: 130px;
+				margin-bottom: 30px;
+			}
+			.mui-card {
+				margin:10px;
+				font-size: 14px;
+				position: relative;
+				overflow: hidden;
+				background-color: rgba(0,0,0,0);
+				background-clip: padding-box;
+				border: 2px solid #046ea4;
+				border-radius: 10px;
+				box-shadow: 0 1px 2px rgba(0,0,0,.3);
+			}
+			.selected-tab {
+				display: inline-block;
+				font-size: 1.25rem;
+				font-weight: bold;
+				touch-action: none;
+			}
+			.normal-tab {
+				display: inline-block;
+				font-size: 1.25rem;
+				font-weight: bold;
+				touch-action: none;
+			}
+			.split {
+				height: 2px;
+				width: 100%;
+				background-color: #0680bc;
+				margin: 10px 0px 10px 0px;
+				padding: 0px;
+			}
+			.mui-content-padded {
+				margin-top: 25px;
+			}
+			.mui-btn {
+				padding: 10px;
+			}
+			input[type=text],
+			input[type=password] {
+				color: #0062CC;
+				border: 2px solid;
+				border-radius: 0.625rem;
+				border-color: #0680bc;
+				background-color: rgba(0,0,0,0);
+			}
+			
+		</style>
+	</head>
+
+	<body class="mui-fullscreen bodyClass">
+		<div class="titleClass">
+			中国北斗卫星导航
+		</div>
+		
+		<div class="mui-card">
+			
+			<div id="slider" class="mui-slider">
+				<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+					<a id="carLogin" class="mui-control-item selected-tab" style="color: #007AFF;" href="#item1mobile">
+				车牌号
+			</a>
+					<a id="supplierLogin" class="mui-control-item normal-tab" style="color: #FFFFFF;" href="#item2mobile">
+				供应商
+			</a>
+				</div>
+				<div id="sliderProgressBar" class="mui-slider-progress-bar mui-col-xs-6"></div>
+				<div class="mui-slider-group">
+					<div id="item1mobile" class="mui-slider-item mui-control-content mui-active">
+						
+					</div>
+					<div id="item2mobile" class="mui-slider-item mui-control-content">
+						
+					</div>
+				</div>
+			</div>
+			
+			<!-- 
+			<div id="slider" class="mui-slider">
+				<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+					<a class="mui-control-item selected-tab" style="color: #00a0e9;">车牌号</a>
+					<a class="mui-control-item normal-tab" style="color: #FFFFFF;">供应商</a>
+				</div>
+				<div id="sliderProgressBar" class="mui-slider-progress-bar mui-col-xs-5"></div>
+				<div class="mui-slider-group">
+					
+				</div>
+			</div>
+			 -->
+			
+			<div class="split"></div>
+			
+			<div>
+				<div style="margin: 20px;" class="mui-input-row">
+					<input type="text" id="account" class="mui-input-clear" placeholder="请输入车牌号" />
+				</div>
+				<div style="margin: 20px;" class="mui-input-row">
+					<input type="password" id="password" class="mui-input-password" placeholder="请输入密码"/>
+				</div>
+			</div>
+			
+			<div class="mui-content-padded">
+				<button id="login" type="button" class="mui-btn mui-btn-block mui-btn-primary" style="background: #046ea4;">登录</button>
+			</div>
+			
+			<div style="float: none;clear: both;height: 20px;"></div>
+			
+			<div class="mui-content" style="margin: 0.625rem;">
+				<div id='serverBtn' style="height: 2rem;line-height: 2rem;float: left;">
+					<img src="images/server.png" />
+					<div id="serverValue" style="color: #0680bc;float: right;margin-left: 0.3125rem;">请选择服务器</div>
+				</div>
+				<div style="height: 2rem;line-height: 2rem;float: right;">
+					<span style="color: #0680bc;margin-right:0.3125rem;">自动登陆</span>
+					<div id="autoLogin" class="mui-switch mui-switch-mini" style="float: right;">
+						<div class="mui-switch-handle"></div>
+					</div>
+				</div>
+			</div>
+			<div style="float: none;clear: both;height: 20px;"></div>
+		</div>
+		<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/update.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.enterfocus.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.picker.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/mui.poppicker.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+			(function(mui, doc) {
+				mui.init({
+					statusBarBackground: '#f7f7f7'
+				});
+				mui.plusReady(function() {
+					//update();
+					//plus.screen.lockOrientation("portrait-primary")
+					var settings = app.getSettings();
+					
+					// close splash
+					setTimeout(function() {
+						//关闭 splash
+						plus.navigator.closeSplashscreen();
+					}, 100);
+					
+					var serverPicker = new mui.PopPicker();
+					var serverList =[{
+						value: "http://221.236.155.202:8004/Concrete/",
+						text: "星船城服务器"
+					}, {
+						value: "http://39.100.33.62:28080/Concrete/",
+						text: "西南服务器"
+					}];
+					serverPicker.setData(serverList);
+					
+					
+					var loginButton = doc.getElementById('login');
+					var accountBox = doc.getElementById('account');
+					var passwordBox = doc.getElementById('password');
+					var autoLoginButton = doc.getElementById("autoLogin");
+					//var regButton = doc.getElementById('reg');
+					//var forgetButton = doc.getElementById('forgetPassword');
+					var supplierLogin = doc.getElementById('supplierLogin');
+					var carLogin = doc.getElementById('carLogin');
+					var serverButton = doc.getElementById('serverBtn');
+					var serverValue = doc.getElementById('serverValue');
+					
+					if(settings.server) {
+						serverValue.value = settings.serverName;
+					}
+					if(settings.userName) {
+						accountBox.value = settings.userName;
+					}
+					if(settings.password) {
+						passwordBox.value = settings.password;
+					}
+					
+					carLogin.className = "normal-tab mui-control-item";
+					carLogin.style.color = "#FFFFFF";
+					supplierLogin.className = "normal-tab mui-control-item";
+					supplierLogin.style.color = "#FFFFFF";
+					if(settings.loginType) {
+						if (settings.loginType == "carLogin") {
+							carLogin.className = "selected-tab mui-control-item";
+							carLogin.style.color = "#007AFF";
+						}
+						if (settings.loginType == "supplierLogin") {
+							supplierLogin.className = "selected-tab mui-control-item";
+							supplierLogin.style.color = "#007AFF";
+						}
+					} else {
+						carLogin.className = "selected-tab mui-control-item";
+						carLogin.style.color = "#007AFF";
+					}
+					
+					carLogin.addEventListener('tap', function(event) {
+						//console.log("carLogin:");
+						if(!this.checked) {
+							this.checked = true;
+						}
+						supplierLogin.checked = false;
+						supplierLogin.style.color = "#FFFFFF";
+						carLogin.style.color = "#007AFF";
+						account.placeholder = "请输入车牌号";
+						settings.loginType = "carLogin";
+						app.setSettings(settings);
+					}, false);
+					
+					supplierLogin.addEventListener('tap', function(event) {
+						//console.log("supplierLogin:");
+						if(!this.checked) {
+							this.checked = true;
+						}
+						carLogin.checked = false;
+						carLogin.style.color = "#FFFFFF";
+						supplierLogin.style.color = "#007AFF";
+						account.placeholder = "请输入账号";
+						settings.loginType = "supplierLogin";
+						app.setSettings(settings);
+						
+					}, false);
+					
+					loginButton.addEventListener('tap', function(event) {
+						var loginInfo = {
+							module: "userLogin",
+							username: accountBox.value,
+							password: passwordBox.value
+						};
+						if (settings.loginType) {
+							loginInfo.operation = settings.loginType;
+						} else {
+							settings.loginType = "carLogin";
+							loginInfo.operation = "carLogin";
+						}
+						
+						waitDialog = plus.nativeUI.showWaiting("正在登录...");
+						app.request("action.do", loginInfo, function(data) {
+							waitDialog.close();
+							if(settings.autoLogin) {
+								settings.userName = accountBox.value;
+								settings.password = passwordBox.value;
+							} else {
+								settings.userName = accountBox.value;
+								settings.password = "";
+							}
+							settings.userType = "carLogin";
+							settings.userInfo = data;
+							app.setSettings(settings);
+							
+							if (settings.loginType == "carLogin") {
+								app.openUrlNoTimeOut("main.html");
+							}
+							if (settings.loginType == "supplierLogin") {
+								app.openUrlNoTimeOut("supplier_order.html");
+							}
+						}, function() {
+							waitDialog.close();
+						});
+					});
+					
+					mui.enterfocus('#login-form input', function() {
+						mui.trigger(loginButton, 'tap');
+					});
+					if(settings.autoLogin) {
+						mui.trigger(loginButton, 'tap');
+					}
+					autoLoginButton.classList[settings.autoLogin ? 'add' : 'remove']('mui-active')
+					autoLoginButton.addEventListener('toggle', function(event) {
+						setTimeout(function() {
+							var isActive = event.detail.isActive;
+							settings.autoLogin = isActive;
+							app.setSettings(settings);
+						}, 50);
+					}, false);
+					/*
+					regButton.addEventListener('tap', function(event) {
+						app.openUrlNoTimeOut("reg.html");
+					}, false);
+					forgetButton.addEventListener('tap', function(event) {
+						app.openUrlNoTimeOut("forget_password.html");
+					}, false);
+					*/
+					serverButton.addEventListener('tap', function(event){
+						if(serverPicker) {
+							serverPicker.show(function(items){
+								serverValue.innerHTML = items[0].text;
+								settings.serverName = items[0].text;
+								settings.server = items[0].value;
+								app.setSettings(settings);
+							});
+						}
+					}, false);
+
+					//
+					var backButtonPress = 0;
+					mui.back = function(event) {
+						backButtonPress++;
+						if(backButtonPress > 1) {
+							plus.runtime.quit();
+						} else {
+							plus.nativeUI.toast('再按一次退出应用');
+						}
+						setTimeout(function() {
+							backButtonPress = 0;
+						}, 1000);
+						return false;
+					};
+				});
+			}(mui, document));
+		</script>
+	</body>
+
+</html>

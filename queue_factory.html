@@ -1,0 +1,154 @@
+<!doctype html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>车辆排队</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/icons-extra.css">
+
+		<script src="js/mui.min.js"></script>
+		<script src="js/app.js"></script>
+		<style>
+			.mui-tab-item{
+				touch-action: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">车辆排队</h1>
+		</header>
+
+		<div class="mui-content mui-scroll-wrapper">
+			<ul class="mui-table-view">
+				<!--<li class="mui-table-view-cell">Item 1 <span class="mui-badge mui-badge-primary">14</span></li>
+				<li class="mui-table-view-cell">Item 2 <span class="mui-badge mui-badge-primary">1</span></li>
+				<li class="mui-table-view-cell">Item 3 <span class="mui-badge mui-badge-primary">5</span></li>-->
+			</ul>
+		</div>
+
+		<nav class="mui-bar mui-bar-tab">
+			<div class="mui-tab-item" id="main">
+				<span class="mui-icon mui-icon-home"></span>
+				<span class="mui-tab-label">首页</span>
+			</div>
+			<div class="mui-tab-item" id="order">
+				<span class="mui-icon mui-icon-extra mui-icon-extra-order"></span>
+				<span class="mui-tab-label">订单</span>
+			</div>
+			<div class="mui-tab-item mui-active" id="queue">
+				<span class="mui-icon mui-icon-extra mui-icon-extra-express"></span>
+				<span class="mui-tab-label">排队</span>
+			</div>
+			<div class="mui-tab-item" id="setting">
+				<span class="mui-icon mui-icon-contact"></span>
+				<span class="mui-tab-label">我的</span>
+			</div>
+		</nav>
+	</body>
+
+	<script type="text/javascript">
+		function plusReady() {
+			//首页按钮
+			var main = document.getElementById('main');
+			main.addEventListener('tap', function(event) {
+				app.openUrlNoTimeOut('main.html');
+			});
+
+			//订单按钮
+			var order = document.getElementById('order');
+			order.addEventListener('tap', function(event) {
+				app.openUrlNoTimeOut('order_list.html');
+			});
+
+			/*//排队按钮
+			var queue = document.getElementById('queue');
+			queue.addEventListener('tap', function(event){
+				app.openUrlNoTimeOut('queue_factory.html');
+			});*/
+
+			//我的按钮
+			var setting = document.getElementById('setting');
+			setting.addEventListener('tap', function(event) {
+				app.openUrlNoTimeOut('setting.html');
+			});
+
+			getFactoryQueue();
+
+			//--
+			mui.oldBack = mui.back;
+			var backButtonPress = 0;
+			mui.back = function(event) {
+				backButtonPress++;
+				if(backButtonPress > 1) {
+					plus.runtime.quit();
+				} else {
+					plus.nativeUI.toast('再按一次退出应用');
+				}
+				setTimeout(function() {
+					backButtonPress = 0;
+				}, 1000);
+				return false;
+			};
+		}
+		
+		mui.init();
+		mui.plusReady(function() {
+			plusReady();
+		});
+		
+		/*
+		if(window.plus) {
+			plusReady();
+		} else {
+			document.addEventListener("plusready", plusReady, false);
+		}
+		// DOMContentloaded事件处理
+		document.addEventListener("DOMContentLoaded", function() {
+			plusReady();
+		}, false);
+		*/
+		
+		function getFactoryQueue() {
+			var requestObj = {
+				module: "queue",
+				operation: "groupFactory",
+				pageSize: 100,
+				pageIndex: 1,
+				rely: "{}"
+			};
+			app.request("app.do", requestObj, function(data) {
+				var data = JSON.parse(data);
+				var table = document.body.querySelector('.mui-table-view');
+				handleData(data.datas, table);
+			}, function() {});
+		}
+
+		function handleData(data, table) {
+			table.innerHTML = "";
+			for(var i = 0; i < data.length; i++) {
+				var item = data[i];
+				var li = document.createElement('li');
+				li.className = 'mui-table-view-cell';
+				li.innerHTML = createItemHtml(item);
+				table.appendChild(li);
+			}
+		}
+
+		function createItemHtml(item) {
+			var htmlStr = "";
+			htmlStr = item.factoryName;
+			htmlStr += '<span class="mui-badge mui-badge-primary">';
+			htmlStr += item.countNum;
+			htmlStr += '</span>';
+
+			return htmlStr;
+		}
+	</script>
+
+</html>

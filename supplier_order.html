@@ -1,0 +1,224 @@
+<!doctype html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>首页</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/icons-extra.css">
+		
+		<script src="js/mui.min.js"></script>
+		<script src="js/app.js"></script>
+		<style>
+			button {
+				margin: 10px;
+				height: 120px;
+				width: 43%;
+			}
+			.number {
+				font-size: 20pt;
+				
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">首页</h1>
+		</header>
+		
+		<div class="mui-content">
+			<div>
+				<img src="images/bar.png" style="width: 100%;" />
+			</div>
+			
+			<button type="button" class="mui-btn mui-btn-primary">
+				<img src="images/1.png" height="50px" />
+				<div id="all_num" class="number">0</div>
+				<div>全部订单数量</div>
+			</button>
+			<button type="button" class="mui-btn mui-btn-red">
+				<img src="images/2.png" height="50px" />
+				<div id="all_weight" class="number">0</div>
+				<div>全部订单重量</div>
+			</button>
+			<button type="button" class="mui-btn mui-btn-royal">
+				<img src="images/3.png" height="50px" />
+				<div id="unfinished_num" class="number">0</div>
+				<div>未完成订单数量</div>
+			</button>
+			<button type="button" class="mui-btn mui-btn-warning">
+				<img src="images/4.png" height="50px" />
+				<div id="unfinished_weight" class="number">0</div>
+				<div>未完成订单重量</div>
+			</button>
+		</div>
+		
+		<nav class="mui-bar mui-bar-tab">
+			<div class="mui-tab-item  mui-active" id="order">
+				<span class="mui-icon mui-icon-extra mui-icon-extra-order"></span>
+				<span class="mui-tab-label">订单</span>
+			</div>
+			<div class="mui-tab-item" id="setting">
+				<span class="mui-icon mui-icon-contact"></span>
+				<span class="mui-tab-label">我的</span>
+			</div>
+		</nav>
+	</body>
+	<script type="text/javascript">
+			// H5 plus事件处理
+			function plusReady() {
+				// 确保DOM解析完成
+				if(!window.plus) {
+					return
+				};
+				
+				var settings = app.getSettings();
+				var all_num = document.getElementById('all_num');
+				var all_weight = document.getElementById('all_weight');
+				var unfinished_num = document.getElementById('unfinished_num');
+				var unfinished_weight = document.getElementById('unfinished_weight');
+				
+				var userInfo = settings.userInfo;
+				all_num.addEventListener('tap', function(event) {
+					settings.orderType = "all";
+					app.setSettings(settings);
+					app.openUrlNoTimeOut('supplier_order_list.html');
+				});
+				all_weight.addEventListener('tap', function(event) {
+					settings.orderType = "all";
+					app.setSettings(settings);
+					app.openUrlNoTimeOut('supplier_order_list.html');
+				});
+				unfinished_num.addEventListener('tap', function(event) {
+					settings.orderType = "unfinished";
+					app.setSettings(settings);
+					app.openUrlNoTimeOut('supplier_order_list.html');
+				});
+				unfinished_weight.addEventListener('tap', function(event) {
+					settings.orderType = "unfinished";
+					app.setSettings(settings);
+					app.openUrlNoTimeOut('supplier_order_list.html');
+				});
+				
+				//订单按钮
+				var order = document.getElementById('order');
+				order.addEventListener('tap', function(event){
+					app.openUrlNoTimeOut('supplier_order.html');
+				});
+				
+				//我的按钮
+				var setting = document.getElementById('setting');
+				setting.addEventListener('tap', function(event){
+					app.openUrlNoTimeOut('supplier_setting.html');
+				});
+				
+				waitDialog = plus.nativeUI.showWaiting("加载中...");
+				getNoticeList();
+				getSupplierOrderInfo(userInfo.id);
+				
+				//--
+				mui.oldBack = mui.back;
+				var backButtonPress = 0;
+				mui.back = function(event) {
+					backButtonPress++;
+					if(backButtonPress > 1) {
+						plus.runtime.quit();
+					} else {
+						plus.nativeUI.toast('再按一次退出应用');
+					}
+					setTimeout(function() {
+						backButtonPress = 0;
+					}, 1000);
+					return false;
+				};
+			}
+			
+			
+			if(window.plus) {
+				plusReady();
+			} else {
+				document.addEventListener("plusready", plusReady, false);
+			}
+			
+			// DOMContentloaded事件处理
+			document.addEventListener("DOMContentLoaded", function() {
+				plusReady();
+			}, false);
+			
+			//获取通知列表
+			function getSupplierOrderInfo(supplierID) {
+				var requestObj = {
+					module: "供应商订单",
+					operation: "request_page",
+					pageSize: 20,
+					pageIndex: 1,
+					rely: {
+						supplierID: supplierID
+					}
+				};
+				app.request("pc.do", requestObj, function(data) {
+					waitDialog.close();
+					var data = JSON.parse(data);
+					if (data.datas && data.datas.length > 0) {
+						var orderInfo = data.datas[0];
+						all_num.innerHTML = orderInfo.allOrder;
+						all_weight.innerHTML = orderInfo.allWeight;
+						unfinished_num.innerHTML = orderInfo.unFinishedOrder;
+						unfinished_weight.innerHTML = orderInfo.unFinishedWeight;
+					} else {
+						all_num.innerHTML = 0;
+						all_weight.innerHTML = 0;
+						unfinished_num.innerHTML = 0;
+						unfinished_weight.innerHTML = 0;
+					}
+				}, function() {
+					waitDialog.close();
+				});
+			}
+			
+			//获取通知列表
+			function getNoticeList() {
+				var requestObj = {
+					module: "通知公告",
+					operation: "request_page",
+					pageSize: 20,
+					pageIndex: 1,
+					rely: {
+						publishTarget: "供应商"
+					}
+				};
+				app.request("pc.do", requestObj, function(data) {
+					var data = JSON.parse(data);
+					for (index in data.datas) {
+						var item = data.datas[index];
+						if (item.readStatus == 0) {
+							mui.alert(item.noticeContent, item.noticeName, "已读", function(){
+								setNoticeReaded(item.id);
+							});
+							break;
+						}
+					}
+				}, function() {
+					
+				});
+			}
+			
+			function setNoticeReaded(noticeId) {
+				//console.log("noticeId:" + noticeId);
+				var requestObj = {
+					module: "通知公告",
+					operation: "setNoticeReaded",
+					noticeID: noticeId
+				};
+				app.request("pc.do", requestObj, function(data) {
+					
+				}, function() {
+			
+				});
+			}
+		</script>
+</html>

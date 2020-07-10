@@ -1,0 +1,372 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/icons-extra.css">
+
+		<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/app.js" type="text/javascript" charset="utf-8"></script>
+		<style>
+			.mui-content>.mui-table-view:first-child {
+				margin-top: 1px;
+			}
+			
+			.mui-table-view:before,
+			.mui-table-view:after {
+				height: 0;
+			}
+			
+			.mui-tab-item{
+				touch-action: none;
+			}
+			
+			.red {
+				color: red;
+			}
+			
+			.weight {
+				font-weight: bolder;
+				color: black;
+			}
+			.middle {
+				display: inline-block;
+				vertical-align: middle;
+			}
+			
+			#refreshContainer {
+				margin-bottom: 44px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<!--<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>-->
+			<h1 class="mui-title">订单列表</h1>
+		</header>
+
+		<div id="refreshContainer" class="mui-content mui-scroll-wrapper">
+			<ul class="mui-table-view" style="background-color: rgba(0,0,0,0);">
+				<!-- <li class="mui-table-view-cell mui-card">
+					<div class="mui-table">
+						<div class="mui-table-cell">
+							<div>
+								<span class="mui-h5">川15C1078</span>
+								<span class="mui-h5" style="float: right;">p.p325R袋装/20</span>
+							</div>
+							<p class="mui-h5">成都天成道贸易有限公司</p>
+							<div style="height: 36px;">
+								<img class="middle" src="images/start.png" />
+								<span class="mui-h4 middle weight">四川省|成都市|瑞达公司</span>
+							</div>
+							<div style="height: 36px;">
+								<img class="middle" src="images/end.png" />
+								<span class="mui-h4 middle weight">四川省|成都市|瑞达公司</span>
+							</div>
+							<div style="margin-left: 20px;">
+								<span class="mui-h5">装车时间:2019-04-28 05:12:12</span>
+							</div>
+							<div style="margin-left: 20px;">
+								<span class="mui-h5">装车时间:2019-04-28 05:12:12</span>
+							</div>
+							<div style="margin-left: 20px;">
+								<span class="mui-h5">装车时间:2019-04-28 05:12:12</span>
+							</div>
+						</div>
+					</div>
+					<div style="width: 100%;height: 1px;background-color: #C7C7CC;"></div>
+					<div style="margin: 5px;">
+						<button type="button" class="mui-btn mui-btn-blue" style="float: left;width: 120px;">详细</button>
+						<button type="button" class="mui-btn mui-btn-blue" style="float: right;width: 120px;">已完成</button>
+					</div>
+				</li>
+				
+				<li class="mui-table-view-cell mui-card">
+					<div class="mui-table">
+						<div class="mui-table-cell">
+							<div>
+								<span class="mui-h5">川15C1078</span>
+								<span class="mui-h5" style="float: right;">p.p325R袋装/20</span>
+							</div>
+							<p class="mui-h5">成都天成道贸易有限公司</p>
+							<div style="height: 36px;">
+								<img class="middle" src="images/start.png" />
+								<span class="mui-h4 middle weight">四川省|成都市|瑞达公司</span>
+							</div>
+							<div style="height: 36px;">
+								<img class="middle" src="images/end.png" />
+								<span class="mui-h4 middle weight">四川省|成都市|瑞达公司</span>
+							</div>
+							<div style="margin-left: 20px;">
+								<span class="mui-h5">装车时间:2019-04-28 05:12:12</span>
+							</div>
+							<div style="margin-left: 20px;">
+								<span class="mui-h5">装车时间:2019-04-28 05:12:12</span>
+							</div>
+							<div style="margin-left: 20px;">
+								<span class="mui-h5">装车时间:2019-04-28 05:12:12</span>
+							</div>
+						</div>
+					</div>
+				</li> -->
+			</ul>
+		</div>
+
+		<nav class="mui-bar mui-bar-tab">
+			<div class="mui-tab-item" id="main">
+				<span class="mui-icon mui-icon-home"></span>
+				<span class="mui-tab-label">首页</span>
+			</div>
+			<div class="mui-tab-item mui-active" id="order">
+				<span class="mui-icon mui-icon-extra mui-icon-extra-order"></span>
+				<span class="mui-tab-label">订单</span>
+			</div>
+			<div class="mui-tab-item" id="queue">
+				<span class="mui-icon mui-icon-extra mui-icon-extra-express"></span>
+				<span class="mui-tab-label">排队</span>
+			</div>
+			<div class="mui-tab-item" id="setting">
+				<span class="mui-icon mui-icon-contact"></span>
+				<span class="mui-tab-label">我的</span>
+			</div>
+		</nav>
+
+		<script type="text/javascript">
+			(function(mui, doc) {
+				
+				var pageSize = 10;
+				var pageIndex = 0;
+				var allData = [];
+
+				mui.plusReady(function() {
+
+					mui.init({
+						pullRefresh: {
+							container: "#refreshContainer",
+							down: {
+								style: 'circle', //必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+								callback: pulldownRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+							},
+							up: {
+								contentrefresh: '正在加载...',
+								callback: pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+							}
+						}
+					});
+
+					if(mui.os.plus) {
+						mui.plusReady(function() {
+							setTimeout(function() {
+								mui('#refreshContainer').pullRefresh().pullupLoading();
+							}, 10);
+
+						});
+					} else {
+						mui.ready(function() {
+							mui('#refreshContainer').pullRefresh().pullupLoading();
+						});
+					}
+
+					//首页按钮
+					var main = document.getElementById('main');
+					main.addEventListener('tap', function(event) {
+						app.openUrlNoTimeOut('main.html');
+					});
+
+					//排队按钮
+					var queue = document.getElementById('queue');
+					queue.addEventListener('tap', function(event) {
+						app.openUrlNoTimeOut('queue_factory.html');
+					});
+
+					//我的按钮
+					var setting = document.getElementById('setting');
+					setting.addEventListener('tap', function(event) {
+						app.openUrlNoTimeOut('setting.html');
+					});
+
+					
+					mui.oldBack = mui.back;
+					var backButtonPress = 0;
+					mui.back = function(event) {
+						backButtonPress++;
+						if(backButtonPress > 1) {
+							plus.runtime.quit();
+						} else {
+							plus.nativeUI.toast('再按一次退出应用');
+						}
+						setTimeout(function() {
+							backButtonPress = 0;
+						}, 1000);
+						return false;
+					};
+				});
+
+				/**
+				 * 下拉刷新具体业务实现
+				 */
+				function pulldownRefresh() {
+					var table = doc.body.querySelector('.mui-table-view');
+					//curIndex = 0;
+					pageIndex = 1;
+					var requestObj = {
+						module: "order",
+						operation: "getAll",
+						pageSize: pageSize,
+						pageIndex: pageIndex
+					};
+					app.request("app.do", requestObj, function(data) {
+						//console.log('pulldown data:' + data);
+						var cells = doc.body.querySelectorAll('.mui-table-view-cell');
+						for(var i = 0; i < cells.length; i++) {
+							table.removeChild(cells[i]);
+						}
+						var data = JSON.parse(data);
+						handleData(data.datas, table, pageIndex);
+						allData = data.datas;
+						mui('#refreshContainer').pullRefresh().endPulldownToRefresh(); //refresh completed
+					}, function() {
+						mui('#refreshContainer').pullRefresh().endPulldownToRefresh(); //refresh completed
+					});
+				}
+				/**
+				 * 上拉加载具体业务实现
+				 */
+				function pullupRefresh() {
+					var that = this;
+					var table = doc.body.querySelector('.mui-table-view');
+					pageIndex = pageIndex + 1;
+					var requestObj = {
+						module: "order",
+						operation: "getAll",
+						pageSize: pageSize,
+						pageIndex: pageIndex
+					};
+					app.request("app.do", requestObj, function(data) {
+						//console.log('pullup data:' + data);
+						var data = JSON.parse(data);
+						handleData(data.datas, table, pageIndex);
+						allData = allData.concat(data.datas);
+						mui('#refreshContainer').pullRefresh().endPullupToRefresh(false); //参数为true代表没有更多数据了。
+					}, function() {
+						mui('#refreshContainer').pullRefresh().endPullupToRefresh(true); //参数为true代表没有更多数据了。
+						//that.enablePullupToRefresh(false);
+					});
+				}
+
+				function handleData(data, table, pageIndex) {
+					var curIndex = (pageIndex - 1) * pageSize;
+					//console.log(curIndex);
+					for(var i = 0; i < data.length; i++) {
+						var item = data[i];
+						var li = doc.createElement('li');
+						li.className = 'mui-table-view-cell  mui-card';
+						li.innerHTML = createItemHtml_new(item);
+						//console.log(curIndex + i);
+						li.setAttribute("selectedIndex", curIndex + i);
+
+						li.addEventListener('tap', function(event) {
+							app.openUrlNoTimeOutWithParams('order_detail.html', allData[this.getAttribute("selectedIndex")]);
+						});
+						table.appendChild(li);
+					}
+				}
+				
+				function createItemHtml_new(item) {
+					var htmlStr = '<div class="mui-table">';
+					htmlStr += '<div class="mui-table-cell">';
+					htmlStr += '<div>';
+					htmlStr += '<span class="mui-h5">' + item.carNO + '</span>';
+					htmlStr += '<span class="mui-h5" style="float: right;">' + item.goodsName + '</span>';
+					htmlStr += '</div>';
+					htmlStr += '<p class="mui-h5">' + item.customerName + '</p>';
+					htmlStr += '<div style="height: 36px;">';
+					htmlStr += '<img class="middle" src="images/start.png" style="width: 20px;height:20px" />';
+					htmlStr += '<span class="mui-h4 middle weight">' + item.factoryName + '</span>';
+					htmlStr += '</div>';
+					htmlStr += '<div style="height: 36px;">';
+					htmlStr += '<img class="middle" src="images/end.png" style="width: 20px;height:20px" />';
+					htmlStr += '<span class="mui-h4 middle weight">' + item.areaName + '</span>';
+					htmlStr += '</div>';
+					htmlStr += '<div style="margin-left: 20px;">';
+					htmlStr += '<span class="mui-h5">装车时间:' + item.orderTime + '</span>';
+					htmlStr += '</div>';
+					htmlStr += '<div style="margin-left: 20px;">';
+					htmlStr += '<span class="mui-h5">出厂时间:' + item.secondWeightTime + '</span>';
+					htmlStr += '</div>';
+					htmlStr += '<div style="margin-left: 20px;">';
+					htmlStr += '<span class="mui-h5">完成时间:' + item.finishTime + '</span>';
+					htmlStr += '</div>';
+					htmlStr += '</div>';
+					htmlStr += '</div>';
+					htmlStr += '<div style="width: 100%;height: 1px;background-color: #C7C7CC;"></div>';
+					htmlStr += '<div style="margin: 5px;">';
+					htmlStr += '<button type="button" class="mui-btn mui-btn-blue" style="float: left;width: 120px;">详细</button>';
+					if(item.orderStatus) {
+						htmlStr += '<button type="button" class="mui-btn mui-btn-blue" style="float: right;width: 120px;">已完成</button>';
+					} else {
+						htmlStr += '<button type="button" class="mui-btn mui-btn-red" style="float: right;width: 120px;">未完成</button>';
+					}
+					htmlStr += '</div>';
+					return htmlStr;
+				}
+				
+				function createItemHtml(item) {
+					var htmlStr = "";
+					if(item.orderStatus) {
+						htmlStr = '<div class="mui-table">';
+						htmlStr += '<div class="mui-table-cell red" style="width: 95%">';
+						// 第一行
+						htmlStr += '<p class="mui-h4 weight">' + item.customerName + '</p>';
+						// 第二行
+						htmlStr += '<div>';
+						htmlStr += '<span class="mui-h5">' + item.areaName + '</span>';
+						if(item.orderStatus) {
+							htmlStr += '<span class="mui-h5" style="float: right;">' + item.orderStatusName + '</span>';
+						} else {
+							htmlStr += '<span class="mui-h5" style="float: right;">' + item.orderStatusName + '</span>';
+						}
+						htmlStr += '</div>';
+						// 第三行
+						htmlStr += '<div>';
+						htmlStr += '<span class="mui-h6">' + item.goodsName + '</span>';
+						htmlStr += '<span class="mui-h6" style="float: right;">' + item.orderTime + '</span>';
+						htmlStr += '</div>';
+
+						htmlStr += '</div>';
+					} else {
+						htmlStr = '<div class="mui-table">';
+						htmlStr += '<div class="mui-table-cell" style="width: 95%">';
+						// 第一行
+						htmlStr += '<p class="mui-h red">' + item.customerName + '</p>';
+						// 第二行
+						htmlStr += '<div>';
+						htmlStr += '<span class="mui-h5 red">' + item.areaName + '</span>';
+						if(item.orderStatus) {
+							htmlStr += '<span class="mui-h5 red" style="float: right;">' + item.orderStatusName + '</span>';
+						} else {
+							htmlStr += '<span class="mui-h5 red" style="float: right;">' + item.orderStatusName + '</span>';
+						}
+						htmlStr += '</div>';
+						// 第三行
+						htmlStr += '<div>';
+						htmlStr += '<span class="mui-h6 red">' + item.goodsName + '</span>';
+						htmlStr += '<span class="mui-h6 red" style="float: right;">' + item.orderTime + '</span>';
+						htmlStr += '</div>';
+
+						htmlStr += '</div>';
+					}
+
+					return htmlStr;
+				}
+			}(mui, document));
+		</script>
+	</body>
+
+</html>

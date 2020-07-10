@@ -71,6 +71,7 @@
 				bubble = null;
 			// H5 plus事件处理
 			function plusReady() {
+				var settings = app.getSettings();
 				// 确保DOM解析完成
 				if(!em || !window.plus || map) {
 					return
@@ -178,7 +179,7 @@
 				//排队按钮
 				var queue = document.getElementById('queue');
 				queue.addEventListener('tap', function(event){
-					app.openUrlNoTimeOut('queue_factory.html');
+					app.openUrlNoTimeOut('queue_list.html');
 				});
 				
 				//我的按钮
@@ -189,6 +190,23 @@
 				
 				//获取通知公告
 				getNoticeList();
+				//获取车辆信息
+				var carInfo = getCarInfo(settings.userName);
+				if (carInfo) {
+					var days = app.expiredDay(carInfo.expiredDate);
+					var message;
+					if (days < 0) {
+						message = "您的车辆已经过期" + days + "天，前联系服务商";
+					} else if (days == 0) {
+						message = "您的车辆于今天过期，请尽快联系服务商";
+					} else if (days <= 30) {
+						message = "您的车辆将于" + days + "天后过期，请尽快联系服务商";
+					}
+					
+					if (message) {
+						mui.alert(message, "服务到期提醒", "确定", function() {});
+					}
+				}
 				
 				
 				//--
@@ -268,5 +286,28 @@
 			
 				});
 			}
+			
+			function getCarInfo(carNO) {
+				var requestObj = {
+					module: "车辆管理",
+					operation: "request_page",
+					pageSize: 10,
+					pageIndex: 1,
+					datas: {
+						carNO: carNO
+					},
+					rely: {}
+				};
+				app.request("pc.do", requestObj, function(data) {
+					var data = JSON.parse(data);
+					if(data.datas.length > 0) {
+						return data.datas[0];
+					}
+					return null;
+				}, function() {
+					return null;
+				});
+			}
+			
 		</script>
 </html>

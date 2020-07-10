@@ -221,5 +221,13 @@
 			}
 		}
 	}
+	
+	//过期时间与当前时间的天数差
+	owner.expiredDay = function(expiredDate) {
+		var date = new Date(expiredDate.replace(/-/g, "/"));
+		var now = new Date();
+		var diffTime = date.getTime() - now.getTime();
+		return parseInt(diffTime / 1000 * 60 * 60 * 24);
+	}
 
 }(mui, window.app = {}));

@@ -58,6 +58,14 @@
 							<span>服务到期</span>
 							<span id="expiredDate" class="mui-pull-right"></span>
 						</li>
+						<li class="mui-table-view-cell">
+							<span>在线状态</span>
+							<span id="onlineStatus" class="mui-pull-right"></span>
+						</li>
+						<li class="mui-table-view-cell">
+							<span>是否可用</span>
+							<span id="enableStatus" class="mui-pull-right"></span>
+						</li>
 					</ul>
 				</div>
 			</div>
@@ -88,6 +96,8 @@
 					document.getElementById("expiredDate").innerHTML = carInfo.expiredDate;
 
 					document.getElementById("carNOValue").value = carInfo.carNO;
+					document.getElementById("onlineStatus").value = carInfo.isDisabled == 0 ? "启用" : "禁用";
+					document.getElementById("enableStatus").value = carInfo.isOnline == 0 ? "离线" : "在线";
 				}
 
 				function getCarInfo(carNO) {

@@ -3,8 +3,8 @@
     "id" : "com.cn.concrete", /*应用的标识，创建应用时自动生成，勿手动修改*/
     "name" : "车管家", /*应用名称，程序桌面图标名称*/
     "version" : {
-        "name" : "3.0", /*应用版本名称*/
-        "code" : ""
+        "name" : "3.0.1", /*应用版本名称*/
+        "code" : 100
     },
     "description" : "车管家", /*应用描述信息*/
     "icons" : {
@@ -104,8 +104,9 @@
     },
     "plus" : {
         "splashscreen" : {
-            "autoclose" : false, /*是否自动关闭程序启动界面，true表示应用加载应用入口页面后自动关闭；false则需调plus.navigator.closeSplashscreen()关闭*/
-            "waiting" : true
+            "autoclose" : true, /*是否自动关闭程序启动界面，true表示应用加载应用入口页面后自动关闭；false则需调plus.navigator.closeSplashscreen()关闭*/
+            "waiting" : true,
+            "delay" : 1
         },
         "popGesture" : "close", /*设置应用默认侧滑返回关闭Webview窗口，"none"为无侧滑返回功能，"hide"为侧滑隐藏Webview窗口。参考http://ask.dcloud.net.cn/article/102*/
         "runmode" : "normal", /*应用的首次启动运行模式，可取liberate或normal，liberate模式在第一次启动时将解压应用资源（Android平台File API才可正常访问_www目录）*/
@@ -210,10 +211,10 @@
                 "ios" : {
                     "iphone" : {
                         "default" : "", /*iPhone3启动图片选，分辨率：320x480*/
-                        "retina35" : "unpackage/res/splash/640x960.png", /*3.5英寸设备(iPhone4)启动图片，分辨率：640x960*/
-                        "retina40" : "unpackage/res/splash/640x1136.png", /*4.0 英寸设备(iPhone5/iPhone5s)启动图片，分辨率：640x1136*/
-                        "retina47" : "unpackage/res/splash/750x1334.png", /*4.7 英寸设备(iPhone6)启动图片，分辨率：750x1334*/
-                        "retina55" : "unpackage/res/splash/1242x2208.png", /*5.5 英寸设备(iPhone6 Plus)启动图片，分辨率：1242x2208*/
+                        "retina35" : "", /*3.5英寸设备(iPhone4)启动图片，分辨率：640x960*/
+                        "retina40" : "", /*4.0 英寸设备(iPhone5/iPhone5s)启动图片，分辨率：640x1136*/
+                        "retina47" : "", /*4.7 英寸设备(iPhone6)启动图片，分辨率：750x1334*/
+                        "retina55" : "", /*5.5 英寸设备(iPhone6 Plus)启动图片，分辨率：1242x2208*/
                         "retina55l" : "",
                         "portrait-896h@3x" : ""
                     },
@@ -245,7 +246,8 @@
                         "appkey_ios" : "vhcyNCx8mRTcIvtZKWkcQzI10TCNpOrb",
                         "appkey_android" : "v12KARiYxaIFz0GGBTuczvr2B5peWHVg"
                     }
-                }
+                },
+                "ad" : {}
             }
         }
     },
@@ -255,5 +257,6 @@
             "resources" : [ "js/mui.js", "css/mui.css" ]
         }
     },
-    "fullscreen" : false
+    "fullscreen" : false,
+    "screenOrientation" : [ "portrait-primary" ]
 }

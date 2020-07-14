@@ -3,8 +3,8 @@
     "id" : "com.cn.concrete", /*应用的标识，创建应用时自动生成，勿手动修改*/
     "name" : "车管家", /*应用名称，程序桌面图标名称*/
     "version" : {
-        "name" : "3.0.1", /*应用版本名称*/
-        "code" : 100
+        "name" : "3.0.3", /*应用版本名称*/
+        "code" : 103
     },
     "description" : "车管家", /*应用描述信息*/
     "icons" : {
@@ -148,7 +148,8 @@
                     "<uses-feature android:name=\"android.hardware.camera\"/>",
                     "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
-                ]
+                ],
+                "abiFilters" : [ "armeabi-v7a", "arm64-v8a", "x86" ]
             },
             "orientation" : [ "portrait-primary" ], /*应用支持的方向，portrait-primary：竖屏正方向；portrait-secondary：竖屏反方向；landscape-primary：横屏正方向；landscape-secondary：横屏反方向*/
             "icons" : {

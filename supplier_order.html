@@ -12,6 +12,7 @@
 		
 		<script src="js/mui.min.js"></script>
 		<script src="js/app.js"></script>
+		<script src="js/update.js" type="text/javascript" charset="utf-8"></script>
 		<style>
 			button {
 				margin: 10px;
@@ -119,6 +120,9 @@
 				waitDialog = plus.nativeUI.showWaiting("加载中...");
 				getNoticeList();
 				getSupplierOrderInfo(userInfo.id);
+				
+				//更新应用
+				update();
 				
 				//--
 				mui.oldBack = mui.back;

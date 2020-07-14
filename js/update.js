@@ -31,7 +31,7 @@ function update() {
 			if(data.status == 0) {
 				var versionInfo = JSON.parse(data.data).datas[0];
 				if(versionInfo) {
-					console.log(plus.runtime.version + ",versionName:" + versionInfo.versionName);
+					//console.log(plus.runtime.version + ",versionName:" + versionInfo.versionName);
 					if(plus.runtime.version != versionInfo.versionName) {
 						plus.nativeUI.confirm(versionInfo.updateMessage, function(event) {
 							if(0 == event.index) {

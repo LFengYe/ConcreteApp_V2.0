@@ -154,7 +154,7 @@
 					statusBarBackground: '#f7f7f7'
 				});
 				mui.plusReady(function() {
-					//update();
+					update();
 					//plus.screen.lockOrientation("portrait-primary")
 					var settings = app.getSettings();
 					
@@ -171,6 +171,9 @@
 					}, {
 						value: "http://39.100.33.62:28080/Concrete/",
 						text: "西南服务器"
+					}, {
+						value: "http://39.100.243.114/Concrete/",
+						text: "永祥服务器"
 					}];
 					serverPicker.setData(serverList);
 					

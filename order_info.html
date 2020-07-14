@@ -62,7 +62,6 @@
 				text-overflow: ellipsis;
 				white-space: nowrap;
 				width: 270px;
-				display: inline-block;
 			}
 			#mileage {
 				overflow: hidden;
@@ -76,20 +75,23 @@
 		
 		<div class="mui-content mui-card">
 			<div style="background-color: #F2F2F2;padding: 10px;">
-				<span class="mui-icon iconfont icon-04f" style="height: 30px;"></span>
-				<div style="display: inline-block;">
-					<div style="display: block;">
-						<div>
-							<span class="mui-h4" id="carNO"></span>
-							<span class="mui-h5" id="mileage"></span>
-						</div>
+				
+				<div>
+					<span class="mui-icon iconfont icon-04f" style="float: left;"></span>
+					<div>
+						<span class="mui-h4" id="carNO"></span>
+						<span class="mui-h5" id="mileage"></span>
 					</div>
-					<div style="display: block;">
+					<div>
 						<span class="mui-icon iconfont icon-xingxing"></span>
 						<span class="mui-h5" id="customerName"></span>
 					</div>
 				</div>
+				
+				<div style="float: none;clear: both;height: 1px;"></div>
 			</div>
+			
+			<div style="float: none;clear: both;height: 1px;"></div>
 			
 			<section id="cd-timeline" class="cd-container" style="">
 				<div class="cd-timeline-block">

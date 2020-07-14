@@ -80,24 +80,25 @@
 					var settings = app.getSettings();
 					var carInfo = settings.userInfo;
 					setCarInfo(carInfo);
-					document.getElementById('refresh').addEventListener("tap", function() {
-						carInfo = getCarInfo(document.getElementById("carNOValue").value);
-						if (carInfo) {
-							setCarInfo(carInfo);
-						}
+					var refresh = document.getElementById('refresh');
+					refresh.addEventListener("tap", function() {
+						getCarInfo(document.getElementById("carNOValue").value);
 					});
 				});
 
 				function setCarInfo(carInfo) {
+					console.log(JSON.stringify(carInfo));
 					document.getElementById("carNO").innerHTML = carInfo.carNO;
 					document.getElementById("motorcadeName").innerHTML = carInfo.motorcadeName;
 					document.getElementById("gpsTime").innerHTML = carInfo.gpsTime;
 					document.getElementById("electronicSeal").innerHTML = carInfo.electronicSeal;
 					document.getElementById("expiredDate").innerHTML = carInfo.expiredDate;
-
+					
+					document.getElementById("onlineStatus").innerHTML = carInfo.isDisabledName;
+					document.getElementById("enableStatus").innerHTML = carInfo.isOnlineName;
+					
 					document.getElementById("carNOValue").value = carInfo.carNO;
-					document.getElementById("onlineStatus").value = carInfo.isDisabled == 0 ? "启用" : "禁用";
-					document.getElementById("enableStatus").value = carInfo.isOnline == 0 ? "离线" : "在线";
+					
 				}
 
 				function getCarInfo(carNO) {
@@ -114,7 +115,10 @@
 					app.request("pc.do", requestObj, function(data) {
 						var data = JSON.parse(data);
 						if(data.datas.length > 0) {
-							return data.datas[0];
+							var carInfo = data.datas[0];
+							if (carInfo) {
+								setCarInfo(carInfo);
+							}
 						}
 						return null;
 					}, function() {

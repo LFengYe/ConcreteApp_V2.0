@@ -12,6 +12,7 @@
 		
 		<script src="js/mui.min.js"></script>
 		<script src="js/app.js"></script>
+		<script src="js/update.js" type="text/javascript" charset="utf-8"></script>
 		<style>
 			
 			#mapview {
@@ -188,26 +189,12 @@
 					app.openUrlNoTimeOut('setting.html');
 				});
 				
+				//更新应用
+				update();
 				//获取通知公告
 				getNoticeList();
 				//获取车辆信息
-				var carInfo = getCarInfo(settings.userName);
-				if (carInfo) {
-					var days = app.expiredDay(carInfo.expiredDate);
-					var message;
-					if (days < 0) {
-						message = "您的车辆已经过期" + days + "天，前联系服务商";
-					} else if (days == 0) {
-						message = "您的车辆于今天过期，请尽快联系服务商";
-					} else if (days <= 30) {
-						message = "您的车辆将于" + days + "天后过期，请尽快联系服务商";
-					}
-					
-					if (message) {
-						mui.alert(message, "服务到期提醒", "确定", function() {});
-					}
-				}
-				
+				getCarInfo(settings.userName);				
 				
 				//--
 				mui.oldBack = mui.back;
@@ -301,11 +288,25 @@
 				app.request("pc.do", requestObj, function(data) {
 					var data = JSON.parse(data);
 					if(data.datas.length > 0) {
-						return data.datas[0];
+						var carInfo = data.datas[0];
+						if (carInfo) {
+							var days = app.expiredDay(carInfo.expiredDate);
+							console.log(days);
+							var message;
+							if (days < 0) {
+								message = "您的车辆已经过期" + days + "天，前联系服务商";
+							} else if (days == 0) {
+								message = "您的车辆于今天过期，请尽快联系服务商";
+							} else if (days <= 30) {
+								message = "您的车辆将于" + days + "天后过期，请尽快联系服务商";
+							}
+							
+							if (message) {
+								mui.alert(message, "服务到期提醒", "确定", function() {});
+							}
+						}
 					}
-					return null;
 				}, function() {
-					return null;
 				});
 			}
 			

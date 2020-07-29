@@ -96,7 +96,8 @@
             "description" : "原生对象"
         },
         "Webview-x5" : {},
-        "Maps" : {}
+        "Maps" : {},
+        "UIWebview" : {}
     },
     "plus" : {
         "splashscreen" : {
@@ -267,5 +268,3 @@
     "fullscreen" : false,
     "screenOrientation" : [ "portrait-primary" ]
 }
-/*是否自动关闭程序启动界面，true表示应用加载应用入口页面后自动关闭；false则需调plus.navigator.closeSplashscreen()关闭*/
-

@@ -3,8 +3,8 @@
     "id" : "com.cn.concrete", /*应用的标识，创建应用时自动生成，勿手动修改*/
     "name" : "车管家", /*应用名称，程序桌面图标名称*/
     "version" : {
-        "name" : "3.0.3", /*应用版本名称*/
-        "code" : 103
+        "name" : "3.0.4", /*应用版本名称*/
+        "code" : 107
     },
     "description" : "车管家", /*应用描述信息*/
     "icons" : {
@@ -54,7 +54,7 @@
             "description" : "访问系统相册"
         },
         "Geolocation" : {
-            "description" : "访问位置信息"
+            "description" : "车管家需要在运行期间访问您的位置信息"
         },
         "Invocation" : {
             "description" : "使用Native.js能力"
@@ -83,12 +83,6 @@
         "Barcode" : {
             "description" : "管理二维码扫描插件"
         },
-        "Maps" : {
-            "description" : "管理地图插件"
-        },
-        "Speech" : {
-            "description" : "管理语音识别插件"
-        },
         "Webview" : {
             "description" : "窗口管理"
         },
@@ -100,7 +94,9 @@
         },
         "NativeObj" : {
             "description" : "原生对象"
-        }
+        },
+        "Webview-x5" : {},
+        "Maps" : {}
     },
     "plus" : {
         "splashscreen" : {
@@ -118,7 +114,19 @@
                 "password" : "", /*iOS应用打包个人证书导入密码*/
                 "p12" : "", /*iOS应用打包个人证书，打包配置文件关联的个人证书*/
                 "devices" : "universal", /*iOS应用支持的设备类型，可取值iphone/ipad/universal*/
-                "frameworks" : []
+                "frameworks" : [],
+                "idfa" : false,
+                "plistcmds" : [
+                    "Set :NSCameraUsageDescription 车管家需要使用你的相机进行拍照上传, 用于判断车辆信息",
+                    "Set :NSLocationWhenInUseUsageDescription 车管家需要在运行期间访问您的位置信息, 用于判断您是否到达目的地"
+                ],
+                "privacyDescription" : {
+                    "NSCameraUsageDescription" : "车管家需要使用你的相机进行拍照上传, 用于判断车辆信息",
+                    "NSLocationWhenInUseUsageDescription" : "车管家需要访问您的位置信息, 用于判断您是否到达目的地",
+                    "NSLocationAlwaysAndWhenInUseUsageDescription" : "车管家需要访问您的位置信息, 用于判断您是否到达目的地",
+                    "NSPhotoLibraryUsageDescription" : "车管家需要使用你的相机进行拍照上传, 用于判断车辆信息",
+                    "NSPhotoLibraryAddUsageDescription" : "车管家需要使用你的相机进行拍照上传, 用于判断车辆信息"
+                }
             },
             "google" : {
                 "packagename" : "", /*Android应用包名，如io.dcloud.HelloH5*/
@@ -149,7 +157,7 @@
                     "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
                 ],
-                "abiFilters" : [ "armeabi-v7a", "arm64-v8a", "x86" ]
+                "abiFilters" : [ "armeabi-v7a", "arm64-v8a" ]
             },
             "orientation" : [ "portrait-primary" ], /*应用支持的方向，portrait-primary：竖屏正方向；portrait-secondary：竖屏反方向；landscape-primary：横屏正方向；landscape-secondary：横屏反方向*/
             "icons" : {
@@ -239,9 +247,7 @@
                 }
             },
             "plugins" : {
-                "speech" : {
-                    "ifly" : {}
-                },
+                "speech" : {},
                 "maps" : {
                     "baidu" : {
                         "appkey_ios" : "vhcyNCx8mRTcIvtZKWkcQzI10TCNpOrb",
@@ -261,3 +267,5 @@
     "fullscreen" : false,
     "screenOrientation" : [ "portrait-primary" ]
 }
+/*是否自动关闭程序启动界面，true表示应用加载应用入口页面后自动关闭；false则需调plus.navigator.closeSplashscreen()关闭*/
+

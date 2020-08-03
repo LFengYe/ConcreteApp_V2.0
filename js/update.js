@@ -41,7 +41,7 @@ function update() {
 					}
 				}
 			} else {
-				plus.nativeUI.toast(data.message);
+				//plus.nativeUI.toast(data.message);
 			}
 		}
 	});

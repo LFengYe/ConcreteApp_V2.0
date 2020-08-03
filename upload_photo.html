@@ -96,19 +96,24 @@
 						var cmr = plus.camera.getCamera();
 						cmr.captureImage(function(path) {
 							plus.io.resolveLocalFileSystemURL(path, function(entry) {
-								driverImg.src = entry.toLocalURL();
-								//compressImage(entry.toLocalURL(), entry.name, 'driver_img');
-								getImgBase64(entry.toLocalURL(), function(data) {
-									driverImgBase64 = data;
-								});
-								/*
-								pathToBase64(entry.toLocalURL()).then(base64Data => {
-									console.log(base64Data);
-								}).catch(error => {
-									console.log(error);
-								});
-								*/
-								//cutImage(entry.toLocalURL(), "driver_img");
+								if(mui.os.ios) {
+									entry.file(function(entryPath) {
+										var reader = new plus.io.FileReader();// 构建文件对象  
+										reader.readAsDataURL(entryPath);// 添加文件（此处安卓可以直接添加文件路径，而IOS则需要文件对象）  
+										reader.onloadend = function (event) {
+											// 文件加载 完成后的事件回调
+											driverImg.src = event.target.result;
+											driverImgBase64 = event.target.result;
+										};  
+									});
+								} else {
+									getImgBase64(entry.toLocalURL(), function(data) {
+										driverImg.src = data;
+										driverImgBase64 = data;
+									});
+									//compressImage(entry.toLocalURL(), entry.name, 'car_img');
+									//cutImage(entry.toLocalURL(), "car_img");
+								}
 							}, function(e) {
 								plus.nativeUI.toast("读取拍照文件错误：" + e.message);
 							});
@@ -130,13 +135,24 @@
 						var cmr = plus.camera.getCamera();
 						cmr.captureImage(function(path) {
 							plus.io.resolveLocalFileSystemURL(path, function(entry) {
-								car_img.src = entry.toLocalURL();
-								//compressImage(entry.toLocalURL(), entry.name, 'car_img');
-								getImgBase64(entry.toLocalURL(), function(data) {
-									carImgBase64 = data;
-								});
-								//cutImage(entry.toLocalURL(), "car_img");
-								
+								if(mui.os.ios) {
+									entry.file(function(entryPath) {
+										var reader = new plus.io.FileReader();// 构建文件对象  
+										reader.readAsDataURL(entryPath);// 添加文件（此处安卓可以直接添加文件路径，而IOS则需要文件对象）  
+										reader.onloadend = function (event) {
+											// 文件加载 完成后的事件回调
+											car_img.src = event.target.result;
+											carImgBase64 = event.target.result;
+										};  
+									});
+								} else {
+									getImgBase64(entry.toLocalURL(), function(data) {
+										car_img.src = data;
+										carImgBase64 = data;
+									});
+									//compressImage(entry.toLocalURL(), entry.name, 'car_img');
+									//cutImage(entry.toLocalURL(), "car_img");
+								}
 							}, function(e) {
 								plus.nativeUI.toast("读取拍照文件错误：" + e.message);
 							});
@@ -309,11 +325,11 @@
 							width: w,
 							height: h
 						});
-						// ctx.drawImage(img, 0, 0, w, h); //TODO 不能加这行代码, 具体原因不清楚
+						ctx.drawImage(img, 0, 0, w, h);
 						
 						//1最清晰，越低越模糊。有一点不清楚这里明明设置的是jpeg。
 						//弹出 base64 开头的一段 data：image/png;却是png。哎开心就好，开心就好
-						var base64 = canvas.toDataURL('image/png');
+						var base64 = canvas.toDataURL('image/png', 1);
 						callback(base64);
 					};
 				}

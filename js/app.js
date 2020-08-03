@@ -227,7 +227,7 @@
 		var date = new Date(expiredDate.replace(/-/g, "/"));
 		var now = new Date();
 		var diffTime = date.getTime() - now.getTime();
-		console.log(diffTime);
+		//console.log(diffTime);
 		return parseInt(diffTime / (1000 * 60 * 60 * 24));
 	}
 

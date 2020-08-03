@@ -72,10 +72,11 @@
 				if (!em || !window.plus || map) {
 					return;
 				};
-				map = new plus.maps.Map("mapview", {
+				map = new plus.maps.create("mapview", {
 					zoom: 18
 				});
-				var self = plus.webview.currentWebview();
+				plus.webview.currentWebview().append(map);
+				let self = plus.webview.currentWebview();
 				orderInfo = self;
 
 				getCarInfo(self.carNO);
@@ -246,14 +247,19 @@
 			}
 			
 			function getTrack() {
-				var start = orderInfo.secondWeightTime;
-				var end = orderInfo.finishTime;
+				let start;
+				if (orderInfo.secondWeightTime) {
+					start = orderInfo.secondWeightTime;
+				} else {
+					start = orderInfo.orderTime;
+				}
+				let end = orderInfo.finishTime;
 				if (mui.os.ios) {
 					start = start.replace(/-/g, "/");
 					end = end.replace(/-/g, "/");
 				}
-				var sepDates = separateDate(start, end);
-				var marker = new plus.maps.Marker(new plus.maps.Point(116.347496, 39.970191));
+				let sepDates = separateDate(start, end);
+				let marker = new plus.maps.Marker(new plus.maps.Point(116.347496, 39.970191));
 				marker.setIcon("images/icon_center_point.png");
 				map.addOverlay(marker);
 				
@@ -271,18 +277,19 @@
 			 * 时间分隔
 			 */
 			function separateDate(start, end) {
-				var sepDates = [];
-				var startTime = Date.parse(start);
-				var endTime = Date.parse(end);
-				var startDate = new Date();
-				var endDate = new Date();
-
+				let sepDates = [];
+				let startTime = Date.parse(start.substr(0, 19));
+				let endTime = Date.parse(end.substr(0, 19));
+				let startDate = new Date();
+				let endDate = new Date();
+				
 				while (startTime < endTime) {
+					let obj;
 					if (startTime + timeInterval < endTime) {
 						startDate.setTime(startTime);
 						startTime = startTime + timeInterval;
 						endDate.setTime(startTime);
-						var obj = {
+						obj = {
 							start: startDate.format("yyyy/MM/dd hh:mm:ss"),
 							end: endDate.format("yyyy/MM/dd hh:mm:ss")
 						};
@@ -290,7 +297,7 @@
 						startDate.setTime(startTime);
 						startTime = endTime;
 						endDate.setTime(startTime);
-						var obj = {
+						obj = {
 							start: startDate.format("yyyy/MM/dd hh:mm:ss"),
 							end: endDate.format("yyyy/MM/dd hh:mm:ss")
 						};
@@ -301,18 +308,19 @@
 			}
 
 			function getTrackData(mapview, marker, option) {
-				var pointArray = [];
-				var requestObj = {
+				let pointArray = [];
+				let item = option.sepDates[option.index];
+				let requestObj = {
 					module: "local",
 					operation: "getTrack",
 					systemNo: option.info,
-					start: option.sepDates[option.index].start,
-					end: option.sepDates[option.index].end
+					start: item.start,
+					end: item.end
 				};
 				app.request("app.do", requestObj, function(data) {
 					if (data && data.length > 0) {
-						for (var i in data) {
-							var location = data[i];
+						for (let i in data) {
+							let location = data[i];
 							if (option.index == 0 && i == 0) {
 								startMileage = location.mileage;
 							} else {
@@ -320,7 +328,7 @@
 							}
 							if (location.lng < 1.0 || location.lat < 1.0 || location.speed < 1.0)
 								continue;
-							var ptObj = new plus.maps.Point(location.lng, location.lat);
+							let ptObj = new plus.maps.Point(location.lng, location.lat);
 							pointArray.push(ptObj);
 						}
 					}
@@ -333,15 +341,21 @@
 							getTrackData(mapview, marker, option);
 						}
 					} else {
-						//adapterViewPort(allPoints, mapview);
 						waitDialog.close();
+						let mileage = (endMileage - startMileage);
+						plus.webview.getWebviewById('order_info').evalJS('updateMileage("' + (mileage ? mileage : 0) + 'Km")');
 						alert("回放完毕");
-						//console.log(startMileage);
-						//console.log(endMileage);
-						var mileage = (endMileage - startMileage);
-						plus.webview.getWebviewById('order_info').evalJS('updateMileage("' + mileage + 'Km")');
+						
+						let polyline = new plus.maps.Polyline(allPoints);
+						polyline.setStrokeColor(option.color);
+						polyline.setLineWidth(5);
+						polyline.setStrokeOpacity(0);
+						mapview.addOverlay(polyline);
 					}
-				}, function() {});
+				}, function() {
+					waitDialog.close();
+					plus.webview.getWebviewById('order_info').evalJS('updateMileage("0Km")');
+				});
 			}
 
 			function addLine(pointArray, mapview, marker, option) {
@@ -400,26 +414,29 @@
 				}
 
 				app.request("app.do", requestObj, function(data) {
-					var convertRes = JSON.parse(data);
+					let convertRes = JSON.parse(data);
 					if (convertRes.status == 0) {
-						for (var i in convertRes.result) {
+						for (let i in convertRes.result) {
 							//var point = new BMap.Point(convertRes.result[i].x, convertRes.result[i].y);
-							var ptObj = new plus.maps.Point(convertRes.result[i].x, convertRes.result[i].y);
+							let ptObj = new plus.maps.Point(convertRes.result[i].x, convertRes.result[i].y);
 							if (!mapview.getBounds().contains(ptObj)) {
 								mapview.setCenter(ptObj);
 							}
-							var pIndex = parseInt(convertIndex) + parseInt(i);
+							let pIndex = parseInt(convertIndex) + parseInt(i);
 							pointArray[pIndex] = ptObj;
+							
+							allPoints.push(ptObj);
 						}
 						/*绘制轨迹*/
-						var polyline;
+						/*
+						let polyline;
 						if (convertIndex > 0) {
 							polyline = new plus.maps.Polyline(pointArray.slice(convertIndex - 1, endPosition));
 							polyline.setStrokeColor(option.color);
 							polyline.setLineWidth(5);
 							polyline.setStrokeOpacity(0);
 						} else {
-							var tmpPoints = pointArray.slice(convertIndex, endPosition);
+							let tmpPoints = pointArray.slice(convertIndex, endPosition);
 							if (option.oldPoint) {
 								tmpPoints.splice(0, 0, option.oldPoint);
 							}
@@ -429,6 +446,7 @@
 							polyline.setStrokeOpacity(0);
 						}
 						mapview.addOverlay(polyline);
+						*/
 
 						if (marker) {
 							marker.setPoint(pointArray[endPosition - 1]);
@@ -442,8 +460,6 @@
 							}, 200);
 						} else {
 							//转换完成
-							allPoints.concat(pointArray);
-							
 							oldPoint = pointArray[endPosition - 1];
 							option.index = option.index + 1;
 							option.oldPoint = oldPoint;

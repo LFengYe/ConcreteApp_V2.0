@@ -4,7 +4,7 @@
     "name" : "车管家", /*应用名称，程序桌面图标名称*/
     "version" : {
         "name" : "3.0.4", /*应用版本名称*/
-        "code" : 107
+        "code" : 111
     },
     "description" : "车管家", /*应用描述信息*/
     "icons" : {
@@ -96,8 +96,7 @@
             "description" : "原生对象"
         },
         "Webview-x5" : {},
-        "Maps" : {},
-        "UIWebview" : {}
+        "Maps" : {}
     },
     "plus" : {
         "splashscreen" : {

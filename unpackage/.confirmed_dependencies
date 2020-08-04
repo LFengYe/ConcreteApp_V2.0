@@ -1,0 +1,193 @@
+{
+  "main.html": {
+    "refer": [
+      "setting.html",
+      "upload_photo.html",
+      "queue.html",
+      "order_main.html",
+      "queue_main.html",
+      "order_list.html",
+      "queue_list.html"
+    ],
+    "resources": [
+      "js/app.js",
+      "js/mui.min.js",
+      "css/mui.min.css",
+      "images/iconfont-tianjia.png",
+      "css/style.css",
+      "fonts/mui.ttf",
+      "images/ic_local_protect_on.png",
+      "images/ic_local_road_condition.png",
+      "images/ic_local_protect_off.png",
+      "images/ic_local_history.png"
+    ]
+  },
+  "forget_password.html": {
+    "resources": [
+      "css/mui.min.css",
+      "css/style.css"
+    ],
+    "refer": []
+  },
+  "login.html": {
+    "resources": [
+      "js/app.js",
+      "js/mui.min.js",
+      "images/sinaweibo.png",
+      "css/mui.min.css",
+      "css/style.css",
+      "images/weixin.png",
+      "images/qq.png",
+      "js/mui.enterfocus.js",
+      "js/jsonp.js",
+      "js/jquery-1.11.1.min.js",
+      "fonts/mui.ttf"
+    ],
+    "refer": [
+      "main.html",
+      "forget_password.html",
+      "reg.html",
+      "main1.html",
+      "supplier_order.html"
+    ]
+  },
+  "setting.html": {
+    "resources": [
+      "libs/easymob-webim-sdk/easemob.im-1.0.5.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "libs/easymob-webim-sdk/json2.js",
+      "libs/easymob-webim-sdk/jquery-1.11.1.js",
+      "js/mui.locker.js",
+      "js/feedback.js",
+      "css/feedback-page.css",
+      "js/feedback-page.js",
+      "libs/easymob-webim-sdk/strophe-custom-2.0.0.js",
+      "js/mui.view.js",
+      "js/app.js",
+      "js/mui.min.js",
+      "images/iconfont-tianjia.png"
+    ],
+    "refer": [
+      "login.html",
+      "order_list.html",
+      "order_main.html",
+      "queue_main.html",
+      "main.html",
+      "queue_list.html",
+      "notice_list.html",
+      "car_info.html",
+      "customer_service.html",
+      "modify_password.html"
+    ]
+  },
+  "reg.html": {
+    "resources": [
+      "css/mui.min.css",
+      "fonts/mui.ttf",
+      "js/app.js",
+      "js/mui.min.js",
+      "css/style.css"
+    ],
+    "refer": []
+  },
+  "upload_photo.html": {
+    "resources": [
+      "js/app.js",
+      "images/iconfont-tianjia.png",
+      "css/mui.min.css",
+      "js/mui.min.js",
+      "css/style.css",
+      "fonts/mui.ttf",
+      "js/jquery-1.11.1.min.js"
+    ],
+    "refer": [
+      "setting.html",
+      "upload_cropper.html"
+    ]
+  },
+  "main1.html": {
+    "resources": [
+      "css/mui.min.css"
+    ],
+    "refer": [
+      "setting.html"
+    ]
+  },
+  "order_list.html": {
+    "resources": [
+      "css/mui.min.css",
+      "js/vue.min.js",
+      "js/app.js"
+    ],
+    "refer": [
+      "setting.html",
+      "queue.html",
+      "queue_main.html",
+      "main.html",
+      "queue_list.html",
+      "order_detail.html"
+    ]
+  },
+  "order_main.html": {
+    "resources": [
+      "order_list.html",
+      "css/mui.min.css",
+      "js/mui.min.js",
+      "fonts/mui.ttf"
+    ],
+    "refer": [
+      "order_list.html"
+    ]
+  },
+  "upload_cropper.html": {
+    "resources": [
+      "js/exif.js",
+      "css/cropper.css",
+      "js/cropper.js",
+      "js/app.js",
+      "js/mui.min.js",
+      "js/jquery-1.11.1.min.js",
+      "css/mui.min.css"
+    ]
+  },
+  "queue_list.html": {
+    "refer": [
+      "setting.html",
+      "order_main.html",
+      "order_list.html",
+      "main.html"
+    ]
+  },
+  "queue_main.html": {
+    "resources": [
+      "queue_list.html"
+    ],
+    "refer": [
+      "queue_list.html"
+    ]
+  },
+  "notice_list.html": {
+    "refer": [
+      "notice_detail.html"
+    ]
+  },
+  "supplier_order.html": {
+    "refer": [
+      "supplier_setting.html",
+      "supplier_order_list.html"
+    ]
+  },
+  "supplier_setting.html": {
+    "refer": [
+      "supplier_order.html",
+      "notice_list.html",
+      "modify_password.html"
+    ]
+  },
+  "supplier_order_list.html": {
+    "refer": [
+      "order_detail.html"
+    ]
+  }
+}

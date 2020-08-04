@@ -94,7 +94,7 @@
 					var driverImg = doc.getElementById('driver_img');
 					driverImg.addEventListener('tap', function(event) {
 						var cmr = plus.camera.getCamera();
-						cmr.captureImage(function(url) {
+						cmr.captureImage(function(path) {
 							plus.io.resolveLocalFileSystemURL(url, function(entry) {
 								if (mui.os.ios) {
 									entry.file(function(path) {
@@ -114,17 +114,20 @@
 							}, function(e) {
 								plus.nativeUI.toast("读取拍照文件错误：" + e.message);
 							});
-						}, function(err) {});
-					}, function(e) {}, {
-						filename: "_doc/camera/",
-						index: 1,
-						popover: {
-							top: "10px",
-							left: "10px",
-							width: "20px",
-							height: "20px"
-						}
-					});
+						}, function(err) {
+							//获取照片失败
+						}, {
+							filename: "_doc/camera/",
+							index: 1,
+							popover: {
+								top: "10px",
+								left: "10px",
+								width: "20px",
+								height: "20px"
+							}
+						});
+					}, function(e) {});
+							
 
 					var car_img = doc.getElementById('car_img');
 					car_img.addEventListener('tap', function(event) {
@@ -319,11 +322,10 @@
 							width: w,
 							height: h,
 						});
-						ctx.drawImage(img, 0, 0, w, h); //TODO 不能加这行代码, 具体原因不清楚
-						
+						ctx.drawImage(img, 0, 0, w, h);
 						//1最清晰，越低越模糊。有一点不清楚这里明明设置的是jpeg。
 						//弹出 base64 开头的一段 data：image/png;却是png。哎开心就好，开心就好
-						let base64 = canvas.toDataURL('image/png', 1);
+						var base64 = canvas.toDataURL('image/png', 1);
 						callback(base64);
 					};
 				}

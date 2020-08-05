@@ -193,43 +193,48 @@
 			}
 			
 			function updateMileage(content) {
-				document.getElementById("mileage").innerHTML = content;
+				//console.log("updateMileage:" + content);
+				let mileage = document.getElementById("mileage");
+				mileage.innerHTML = content;
 			}
 
 			/**
 			 * 订单详情
 			 */
 			function getOrderDetail(orderInfo) {
-				var orderId = orderInfo.orderId;
+				let orderId = orderInfo.orderId;
 
-				var customerName = document.getElementById('customerName');
+				let customerName = document.getElementById('customerName');
 				customerName.innerHTML = orderInfo.customerName;
 
-				var factoryName = document.getElementById('factoryName');
+				let factoryName = document.getElementById('factoryName');
 				factoryName.innerHTML = orderInfo.factoryName;
 
-				var goodsName = document.getElementById('goodsName');
+				let goodsName = document.getElementById('goodsName');
 				goodsName.innerHTML = orderInfo.goodsName;
 
-				var areaName = document.getElementById('areaName');
+				let areaName = document.getElementById('areaName');
 				areaName.innerHTML = orderInfo.areaName;
 
-				var orderWeight = document.getElementById('orderWeight');
+				let orderWeight = document.getElementById('orderWeight');
 				orderWeight.innerHTML = orderInfo.orderWeight;
 
-				var carNO = document.getElementById('carNO');
+				let carNO = document.getElementById('carNO');
 				carNO.innerHTML = orderInfo.carNO;
-
-				var orderTime = document.getElementById('orderTime');
+				
+				let mileage = document.getElementById("mileage");
+				mileage.innerHTML = "0Km";
+				
+				let orderTime = document.getElementById('orderTime');
 				orderTime.innerHTML = orderInfo.orderTime;
 
-				var secondWeightTime = document.getElementById('secondWeightTime');
+				let secondWeightTime = document.getElementById('secondWeightTime');
 				secondWeightTime.innerHTML = orderInfo.secondWeightTime;
 
-				var finishType = document.getElementById('finishType');
+				let finishType = document.getElementById('finishType');
 				finishType.innerHTML = orderInfo.finishType;
 
-				var finishTime = document.getElementById('finishTime');
+				let finishTime = document.getElementById('finishTime');
 				finishTime.innerHTML = orderInfo.finishTime;
 			}
 		</script>

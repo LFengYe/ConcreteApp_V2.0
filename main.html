@@ -289,7 +289,6 @@
 						var carInfo = data.datas[0];
 						if (carInfo) {
 							var days = app.expiredDay(carInfo.expiredDate);
-							console.log(days);
 							var message;
 							if (days < 0) {
 								message = "您的车辆已经过期" + days + "天，前联系服务商";

@@ -2,66 +2,85 @@
 <html>
 
 	<head>
-		<meta charset="utf-8">
+		<meta charset="UTF-8">
 		<title></title>
-		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<link href="css/mui.css" rel="stylesheet" />
-		<link href="css/timeline.css" rel="stylesheet" />
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/icons-extra.css" rel="stylesheet">
+
+		<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/script.js" type="text/javascript" charset="utf-8"></script>
+
+		<style>
+			body {
+				height: 100%;
+			}
+			
+			#mapview {
+				position: fixed;
+				width: 100%;
+				top: 46px;
+				bottom: 0px;
+				text-align: center;
+				background: #FFFFFF;
+			}
+			.mui-action-back {
+				touch-action: none;
+			}
+		</style>
 	</head>
 
 	<body>
-		<div id="app" class="mui-content" style="background-color: rgb(255, 255, 255);">
-			<section id="cd-timeline" class="cd-container" style="">
-				<div class="cd-timeline-block">
-					<div class="cd-timeline-img cd-green"></div>
-					<div class="cd-timeline-content">
-						<div></div>
-						<div>
-							<span class="mui-h4">工厂名称:</span>
-							<span class="mui-h4" id="factoryName"></span>
-						</div>
-						<div>
-							<span class="mui-h4">物料名称:</span>
-							<span class="mui-h4" id="goodsName"></span>
-						</div>
-						<div>
-							<span class="mui-h4">送达地区:</span>
-							<span class="mui-h4" id="areaName"></span>
-						</div>
-						<div>
-							<span class="mui-h4">订单载重:</span>
-							<span class="mui-h4" id="orderWeight"></span>
-						</div>
-						<div>
-							<span class="mui-h4">开票时间:</span>
-							<span class="mui-h4" id="orderTime"></span>
-						</div>
-						<div>
-							<span class="mui-h4">二次过磅时间:</span>
-							<span class="mui-h4" id="secondWeightTime"></span>
-						</div>
-						<div>
-							<span class="mui-h4">完成方式:</span>
-							<span class="mui-h4" id="finishType"></span>
-						</div>
-						<div>
-							<span class="mui-h4">完成时间:</span>
-							<span class="mui-h4" id="finishTime"></span>
-						</div>
-					</div>
-				</div>
-				<div class="cd-timeline-block">
-					<div class="cd-timeline-img cd-red"></div>
-					<div class="cd-timeline-content">
-						<div></div>
-					</div>
-				</div>
-			</section>
-		</div>
-		<script src="js/mui.js"></script>
-		<script type="text/javascript">
-			mui.init()
-		</script>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">订单详情</h1>
+		</header>
+
+		<div id="mapview" class="mui-content">地图加载中...</div>
 	</body>
+	
+	<script type="text/javascript">
+		var mapDiv, map;
+		
+		if (window.plus) {
+			plusReady();
+		} else {
+			document.addEventListener("plusready", function() {
+				mapDiv = document.getElementById("mapview");
+				plusReady();
+			}, false);
+		}
+		
+		
+		// DOMContentloaded事件处理
+		document.addEventListener("DOMContentLoaded", function() {
+			mapDiv = document.getElementById("mapview");
+			plusReady();
+		}, false);
+		
+				
+		function plusReady() {
+			console.log('plusReady');
+			// 确保DOM解析完成
+			if (!mapDiv || !window.plus || map) {
+				console.log('return');
+				return;
+			};
+			console.log('createMap');
+			map = new plus.maps.Map("mapview", {
+				zoom: 15
+			});
+			
+			map.setCenter(new plus.maps.Point(116.0,39.0));
+			// 创建一个折线对象
+			var points = new Array(new plus.maps.Point(116.0,39.0), new plus.maps.Point(115.0,38.0), new plus.maps.Point(117.0,38.0) );
+			var polylineObj = new plus.maps.Polyline( points );
+			map.addOverlay(polylineObj);
+		}
+		
+	</script>
 
 </html>

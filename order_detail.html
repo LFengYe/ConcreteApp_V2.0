@@ -72,13 +72,13 @@
 				if (!em || !window.plus || map) {
 					return;
 				};
-				map = new plus.maps.create("mapview", {
+				map = new plus.maps.Map("mapview", {
 					zoom: 18
 				});
-				plus.webview.currentWebview().append(map);
+				
 				let self = plus.webview.currentWebview();
 				orderInfo = self;
-
+				
 				getCarInfo(self.carNO);
 
 				getPhoneLocation();
@@ -200,6 +200,7 @@
 					rely: {}
 				};
 				app.request("pc.do", requestObj, function(data) {
+					console.log('获取车辆数据' + data);
 					var data = JSON.parse(data);
 					if (data.datas && data.datas.length > 0) {
 						carInfo = data.datas[0];
@@ -247,6 +248,10 @@
 			}
 			
 			function getTrack() {
+				if (!carInfo) {
+					alert('车辆信息获取失败, 请返回重试!');
+					return;
+				}
 				let start;
 				if (orderInfo.secondWeightTime) {
 					start = orderInfo.secondWeightTime;
@@ -265,9 +270,9 @@
 				
 				plus.webview.getWebviewById('order_info').evalJS('updateMileage("正在计算中...")');
 				waitDialog = plus.nativeUI.showWaiting("轨迹加载中...");
-				getTrackData(map, marker, {
+				getTrackData_new(map, marker, {
 					color: "#0000FF",
-					info: carInfo.systemNo,
+					info: carInfo.systemNO,
 					sepDates: sepDates,
 					index: 0
 				});
@@ -306,9 +311,8 @@
 				}
 				return sepDates;
 			}
-
-			function getTrackData(mapview, marker, option) {
-				let pointArray = [];
+			
+			function getTrackData_new(mapview, marker, option) {
 				let item = option.sepDates[option.index];
 				let requestObj = {
 					module: "local",
@@ -328,6 +332,57 @@
 							}
 							if (location.lng < 1.0 || location.lat < 1.0 || location.speed < 1.0)
 								continue;
+							let convertPoint = app.wgs84togcj02(location.lng, location.lat);
+							let ptObj = new plus.maps.Point(convertPoint.lng, convertPoint.lat);
+							allPoints.push(ptObj);
+						}
+					}
+					
+					if (option.index < option.sepDates.length - 1) {
+						option.index = option.index + 1;
+						getTrackData_new(mapview, marker, option);
+					} else {
+						waitDialog.close();
+						let mileage = (endMileage - startMileage);
+						plus.webview.getWebviewById('order_info').evalJS('updateMileage("' + (mileage ? mileage : 0) + 'Km")');
+						
+						if (marker) {
+							marker.setPoint(allPoints[allPoints.length - 1]);
+						}
+						mapview.setCenter(allPoints[allPoints.length - 1]);
+						
+						//console.log('allPoints' + JSON.stringify(allPoints));
+						let polyline = new plus.maps.Polyline(allPoints);
+						polyline.setStrokeColor(option.color);
+						polyline.setLineWidth(1);
+						mapview.addOverlay(polyline);
+						alert("回放完毕");
+					}
+				});
+			}
+			
+			function getTrackData(mapview, marker, option) {
+				var pointArray = [];
+				let item = option.sepDates[option.index];
+				let requestObj = {
+					module: "local",
+					operation: "getTrack",
+					systemNo: option.info,
+					start: item.start,
+					end: item.end
+				};
+				app.request("app.do", requestObj, function(data) {
+					if (data && data.length > 0) {
+						for (let i in data) {
+							let location = data[i];
+							if (option.index == 0 && i == 0) {
+								startMileage = location.mileage;
+								//console.log(startMileage);
+							} else {
+								endMileage = location.mileage;
+							}
+							if (location.lng < 1.0 || location.lat < 1.0 || location.speed < 1.0)
+								continue;
 							let ptObj = new plus.maps.Point(location.lng, location.lat);
 							pointArray.push(ptObj);
 						}
@@ -335,7 +390,8 @@
 
 					if (option.index < option.sepDates.length - 1) {
 						if (pointArray.length > 0) {
-							addLine(pointArray, mapview, marker, option);
+							//addLine(pointArray, mapview, marker, option);
+							convertCallBack(pointArray, 0, mapview, option, marker);
 						} else {
 							option.index = option.index + 1;
 							getTrackData(mapview, marker, option);
@@ -344,13 +400,31 @@
 						waitDialog.close();
 						let mileage = (endMileage - startMileage);
 						plus.webview.getWebviewById('order_info').evalJS('updateMileage("' + (mileage ? mileage : 0) + 'Km")');
-						alert("回放完毕");
 						
-						let polyline = new plus.maps.Polyline(allPoints);
+						if (oldPoint) {
+							mapview.setCenter(oldPoint);
+						} else {
+							mapview.setCenter(allPoints.get(allPoints.length - 1));
+						}
+						
+						console.log('allPoints.length:' + pointArray.length);
+						//console.log('allPoints' + JSON.stringify(allPoints));
+						let polyline = new plus.maps.Polyline(pointArray);
 						polyline.setStrokeColor(option.color);
-						polyline.setLineWidth(5);
-						polyline.setStrokeOpacity(0);
+						polyline.setLineWidth(2);
+						// polyline.setStrokeOpacity(0);
 						mapview.addOverlay(polyline);
+						
+						
+						/* 
+						mapview.setCenter(new plus.maps.Point(116.0,39.0));
+						// 创建一个折线对象
+						var points = new Array(new plus.maps.Point(116.0,39.0), new plus.maps.Point(115.0,38.0), new plus.maps.Point(117.0,38.0) );
+						console.log('points' + JSON.stringify(points));
+						var polylineObj = new plus.maps.Polyline( points );
+						mapview.addOverlay(polylineObj);
+						 */
+						alert("回放完毕");
 					}
 				}, function() {
 					waitDialog.close();
@@ -392,17 +466,18 @@
 				var southwest = new plus.maps.Point(swlng, swlat);
 				var bounds = new plus.maps.Bounds(northease, southwest);
 				//地图暂不支持设置地图可视范围
-				//mapview.setBounds(bounds);
+				mapview.setBounds(bounds);
 			}
 
 			var oldPoint;
 
 			function convertCallBack(pointArray, convertIndex, mapview, option, marker) {
-				var requestObj = {
+				let requestObj = {
 					module: "local",
 					operation: "convertLatLng"
 				};
-				var isFinished, endPosition;
+				let isFinished, endPosition;
+				//console.log('pointArray.length' + pointArray.length);
 				if (pointArray.length > convertIndex + convertNum) {
 					requestObj.points = pointArray.slice(convertIndex, convertIndex + convertNum);
 					endPosition = convertIndex + convertNum;
@@ -416,38 +491,42 @@
 				app.request("app.do", requestObj, function(data) {
 					let convertRes = JSON.parse(data);
 					if (convertRes.status == 0) {
+						let convertPoints = [];
 						for (let i in convertRes.result) {
 							//var point = new BMap.Point(convertRes.result[i].x, convertRes.result[i].y);
 							let ptObj = new plus.maps.Point(convertRes.result[i].x, convertRes.result[i].y);
-							if (!mapview.getBounds().contains(ptObj)) {
-								mapview.setCenter(ptObj);
-							}
-							let pIndex = parseInt(convertIndex) + parseInt(i);
-							pointArray[pIndex] = ptObj;
 							
+							/* if (!mapview.getBounds().contains(ptObj)) {
+								mapview.setCenter(ptObj);
+							} */
+							
+							//let pIndex = parseInt(convertIndex) + parseInt(i);
+							
+							convertPoints.push(ptObj);
 							allPoints.push(ptObj);
 						}
 						/*绘制轨迹*/
-						/*
+						/* 
 						let polyline;
 						if (convertIndex > 0) {
-							polyline = new plus.maps.Polyline(pointArray.slice(convertIndex - 1, endPosition));
+							//polyline = new plus.maps.Polyline(pointArray.slice(convertIndex - 1, endPosition));
+							polyline = new plus.maps.Polyline(convertPoints);
 							polyline.setStrokeColor(option.color);
-							polyline.setLineWidth(5);
-							polyline.setStrokeOpacity(0);
+							polyline.setLineWidth(1);
+							//polyline.setStrokeOpacity(0);
 						} else {
-							let tmpPoints = pointArray.slice(convertIndex, endPosition);
-							if (option.oldPoint) {
-								tmpPoints.splice(0, 0, option.oldPoint);
+							if (oldPoint) {
+								convertPoints.splice(0, 0, option.oldPoint);
 							}
-							polyline = new plus.maps.Polyline(tmpPoints);
+							polyline = new plus.maps.Polyline(convertPoints);
 							polyline.setStrokeColor(option.color);
-							polyline.setLineWidth(5);
-							polyline.setStrokeOpacity(0);
+							polyline.setLineWidth(1);
+							//polyline.setStrokeOpacity(0);
 						}
 						mapview.addOverlay(polyline);
-						*/
-
+						mapview.setCenter(pointArray[endPosition - 1]);
+						 */
+					   
 						if (marker) {
 							marker.setPoint(pointArray[endPosition - 1]);
 						}
@@ -462,7 +541,7 @@
 							//转换完成
 							oldPoint = pointArray[endPosition - 1];
 							option.index = option.index + 1;
-							option.oldPoint = oldPoint;
+							//option.oldPoint = oldPoint;
 							getTrackData(mapview, marker, option);
 						}
 					} else {

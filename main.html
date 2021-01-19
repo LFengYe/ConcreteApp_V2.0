@@ -246,6 +246,7 @@
 				};
 				app.request("pc.do", requestObj, function(data) {
 					var data = JSON.parse(data);
+					//console.log("通知公告:" + JSON.stringify(data));
 					for (index in data.datas) {
 						var item = data.datas[index];
 						if (item.readStatus == 0) {
@@ -256,6 +257,7 @@
 						}
 					}
 				}, function() {
+					//console.log("通知公告为空");
 				});
 			}
 			

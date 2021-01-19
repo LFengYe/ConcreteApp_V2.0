@@ -95,7 +95,7 @@
 					driverImg.addEventListener('tap', function(event) {
 						var cmr = plus.camera.getCamera();
 						cmr.captureImage(function(path) {
-							plus.io.resolveLocalFileSystemURL(url, function(entry) {
+							plus.io.resolveLocalFileSystemURL(path, function(entry) {
 								if (mui.os.ios) {
 									entry.file(function(path) {
 										let reader = new plus.io.FileReader();

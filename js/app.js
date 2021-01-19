@@ -46,13 +46,13 @@
 	};
 	
 	owner.request = function(action, obj, successCallback, failCallback) {
-		console.log("Request Data:" + JSON.stringify(obj));
+		//console.log("Request Data:" + JSON.stringify(obj));
 		var xhr = new plus.net.XMLHttpRequest();
 		xhr.onreadystatechange = function() {
 			switch(xhr.readyState) {
 				case 4: {
 					if (xhr.status == 200) {
-						console.log("Response Data:" + xhr.responseText);
+						//console.log("Response Data:" + xhr.responseText);
 						var data = JSON.parse(xhr.responseText);
 						if(data) {
 							if(data.message) {

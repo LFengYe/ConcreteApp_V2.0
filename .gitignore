@@ -4,6 +4,7 @@
 *.idea
 target/
 logs/
+/unpackage/
 
 ### Log file ###
 *.log

@@ -96,7 +96,8 @@
 						var cmr = plus.camera.getCamera();
 						cmr.captureImage(function(path) {
 							plus.io.resolveLocalFileSystemURL(path, function(entry) {
-								if (mui.os.ios) {
+								
+								/* if (mui.os.ios) {
 									entry.file(function(path) {
 										let reader = new plus.io.FileReader();
 										reader.readAsDataURL(path);
@@ -110,7 +111,17 @@
 										driverImg.src = data;
 										driverImgBase64 = data;
 									});
-								}
+								} */
+								
+								entry.file(function(path) {
+									let reader = new plus.io.FileReader();
+									reader.readAsDataURL(path);
+									reader.onloadend = function (event) {// 文件加载 完成后的事件回调
+									  driverImg.src = event.target.result;
+									  driverImgBase64 = event.target.result;
+									};
+								});
+								
 							}, function(e) {
 								plus.nativeUI.toast("读取拍照文件错误：" + e.message);
 							});
